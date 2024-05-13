@@ -168,7 +168,7 @@
 # 
 # NCFLIBS   = "-lnetcdff -lnetcdf -lhdf5hl_fortran -lhdf5_fortran -lhdf5_hl -lhdf5 -lmfhdf -ldf -ljpeg -lm -lz -lcurl -lsz"   # all-out netcdf-4
 # 
-NCFLIBS   = "`nf-config --flibs` `nc-config --libs`"   # general-case netcdf-4 with NetCDF "bin" in ${path}
+NCFLIBS   = `nf-config --flibs` `nc-config --libs`   # general-case netcdf-4 with NetCDF "bin" in ${path}
 # 
 # INSTALL   = <installation base-directory> -- what GNU "configure" calls "--prefix=..."
 # LIBINST   = $(INSTALL)/lib
