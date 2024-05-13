@@ -1,0 +1,134 @@
+
+model       ADJOINT_BWD;
+
+FPP         mpif90;
+
+cpp_flags   "  -Dparallel -Dcluster -DINTERPB=PINTERPB -DM3ERR=PM3ERR -DM3EXIT=PM3EXIT -DM3WARN=PM3WARN -DSHUT3=PSHUT3 -DWRITE3=PWRITE3 -DSUBST_MODULES=SE_MODULES -DSUBST_BARRIER=SE_BARRIER -DSUBST_GLOBAL_MAX=SE_GLOBAL_MAX -DSUBST_GLOBAL_MIN=SE_GLOBAL_MIN -DSUBST_GLOBAL_MIN_DATA=SE_GLOBAL_MIN_DATA -DSUBST_GLOBAL_TO_LOCAL_COORD=SE_GLOBAL_TO_LOCAL_COORD -DSUBST_GLOBAL_SUM=SE_GLOBAL_SUM -DSUBST_GLOBAL_LOGICAL=SE_GLOBAL_LOGICAL -DSUBST_LOOP_INDEX=SE_LOOP_INDEX -DSUBST_SUBGRID_INDEX=SE_SUBGRID_INDEX -DSUBST_HI_LO_BND_PE=SE_HI_LO_BND_PE -DSUBST_SUM_CHK=SE_SUM_CHK -DSUBST_INIT_ARRAY=SE_INIT_ARRAY -DSUBST_COMM=SE_COMM -DSUBST_MY_REGION=SE_MY_REGION -DSUBST_SLICE=SE_SLICE -DSUBST_GATHER=SE_GATHER -DSUBST_DATA_COPY=SE_DATA_COPY -DSUBST_IN_SYN=SE_IN_SYN";
+
+f_compiler  mpif90;
+
+f_flags     "-extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g -O2 -module ../BLD_bwd_COonly/MOD_DIR -I.";
+
+c_flags     "-g -I/apps/openmpi/4.0.3/include";
+
+link_flags  "-qopenmp";
+
+libraries   "-L/home/563/spt563/cmaq/CMAQv5.0.2/lib/x86_64/intel/se_snl -lse_snl -L/home/563/spt563/cmaq/CMAQv5.0.2/lib/x86_64/intel/pario -lpario  -L/apps/openmpi/4.0.3/lib -lmpi -L/apps/openmpi/4.0.3/lib/Intel -lmpi_mpifh -L/home/563/spt563/cmaq/ioapi-3.1/Linux2_x86_64ifort -lioapi -L/apps/netcdf/4.7.1/lib -lnetcdf -L/apps/netcdf/4.7.1/lib/Intel -lnetcdff";
+
+global      verbose;
+
+// mechanism and tracer: mech/cb05cl_ae5_aq_COonly, mech/trac0
+// project archive: /home/563/spt563/cmaq/cmaq_adj/CCTM
+
+include SUBST_PE_COMM    /home/563/spt563/cmaq/cmaq_adj/ICL/fixed/par/PE_COMM.EXT;
+include SUBST_CONST      /home/563/spt563/cmaq/cmaq_adj/ICL/fixed/const/CONST.EXT;
+include SUBST_FILES_ID   /home/563/spt563/cmaq/cmaq_adj/ICL/fixed/filenames/FILES_CTM.EXT;
+include SUBST_EMPR_VD    /home/563/spt563/cmaq/cmaq_adj/ICL/fixed/emctrl/EMISPRM.vdif.EXT;
+include SUBST_EMPR_CH    /home/563/spt563/cmaq/cmaq_adj/ICL/fixed/emctrl/EMISPRM.chem.EXT;
+include SUBST_IOPARMS    /home/563/spt563/cmaq/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT;
+include SUBST_IOFDESC    /home/563/spt563/cmaq/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT;
+include SUBST_IODECL     /home/563/spt563/cmaq/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT;
+include SUBST_RXCMMN     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/RXCM.EXT;
+include SUBST_RXDATA     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/RXDT.EXT;
+include SUBST_GC_SPC     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_SPC.EXT;
+include SUBST_GC_EMIS    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_EMIS.EXT;
+include SUBST_GC_ICBC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_ICBC.EXT;
+include SUBST_GC_DIFF    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_DIFF.EXT;
+include SUBST_GC_DDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_DDEP.EXT;
+include SUBST_GC_DEPV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_DEPV.EXT;
+include SUBST_GC_ADV     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_ADV.EXT;
+include SUBST_GC_CONC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_CONC.EXT;
+include SUBST_GC_G2AE    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_G2AE.EXT;
+include SUBST_GC_G2AQ    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_G2AQ.EXT;
+include SUBST_GC_SCAV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_SCAV.EXT;
+include SUBST_GC_WDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/GC_WDEP.EXT;
+include SUBST_AE_SPC     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_SPC.EXT;
+include SUBST_AE_EMIS    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_EMIS.EXT;
+include SUBST_AE_ICBC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_ICBC.EXT;
+include SUBST_AE_DIFF    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_DIFF.EXT;
+include SUBST_AE_DDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_DDEP.EXT;
+include SUBST_AE_DEPV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_DEPV.EXT;
+include SUBST_AE_ADV     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_ADV.EXT;
+include SUBST_AE_CONC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_CONC.EXT;
+include SUBST_AE_A2AQ    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_A2AQ.EXT;
+include SUBST_AE_SCAV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_SCAV.EXT;
+include SUBST_AE_WDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/AE_WDEP.EXT;
+include SUBST_NR_SPC     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_SPC.EXT;
+include SUBST_NR_EMIS    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_EMIS.EXT;
+include SUBST_NR_ICBC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_ICBC.EXT;
+include SUBST_NR_DIFF    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_DIFF.EXT;
+include SUBST_NR_DDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_DDEP.EXT;
+include SUBST_NR_DEPV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_DEPV.EXT;
+include SUBST_NR_ADV     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_ADV.EXT;
+include SUBST_NR_N2AE    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_N2AE.EXT;
+include SUBST_NR_CONC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_CONC.EXT;
+include SUBST_NR_N2AQ    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_N2AQ.EXT;
+include SUBST_NR_SCAV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_SCAV.EXT;
+include SUBST_NR_WDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_COonly/NR_WDEP.EXT;
+include SUBST_TR_SPC     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT;
+include SUBST_TR_EMIS    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT;
+include SUBST_TR_ICBC    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_ICBC.EXT;
+include SUBST_TR_DIFF    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT;
+include SUBST_TR_DDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_DDEP.EXT;
+include SUBST_TR_DEPV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT;
+include SUBST_TR_ADV     /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT;
+include SUBST_TR_T2AQ    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_T2AQ.EXT;
+include SUBST_TR_SCAV    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_SCAV.EXT;
+include SUBST_TR_WDEP    /home/563/spt563/cmaq/cmaq_adj/ICL/mech/trac0/TR_WDEP.EXT;
+
+// Process Analysis / Integrated Reaction Rates processing
+include SUBST_PACTL_ID    /home/563/spt563/cmaq/cmaq_adj/ICL/procan/pa_noop/PA_CTL.EXT;
+include SUBST_PACMN_ID    /home/563/spt563/cmaq/cmaq_adj/ICL/procan/pa_noop/PA_CMN.EXT;
+include SUBST_PADAT_ID    /home/563/spt563/cmaq/cmaq_adj/ICL/procan/pa_noop/PA_DAT.EXT;
+
+// Parallel / Include message passing definitions
+include SUBST_MPICH /apps/openmpi/4.0.3/include/Intel/mpif.h ;
+
+// options are ctm and ctm_yamo
+Module driver/yamo_adj_bwd;
+
+Module par/par;
+
+// options are init and init_yamo
+Module init/adj_bwd;
+
+// options are denrate and adjcon_noop
+Module // yamo option does not need denrate;
+
+Module couple/gencoor_ceil;
+
+// options are hppm, hyamo and hadv_noop
+Module hadv/yamo_cadj_bwd;
+
+// options are vppm, vyamo and vadv_noop
+Module vadv/vyamo_cadj_ceil_bwd;
+
+// options are multi_scale and hdiff_noop
+Module hdiff/multiscale_adj_bwd;
+
+// options are eddy, acm2 and vdiff_noop
+Module vdiff/acm2_inline_adj_bwd;
+
+// options are phot_table, phot_sat and phot_inline
+Module phot/phot_noop;
+
+// options are ros3, smvgear, ebi_cb05cl, ebi_cb05cl_ae5, ebi_saprc99, ebi_saprc99_ae5 and chem_noop
+Module chem/chem_bwd_noop;
+
+// options are aero4, aero5 and aero_noop
+Module aero/aero_bwd_noop;
+
+// options are aero_depv2 and aero_depv_noop
+Module aero_depv/aero_depv_noop;
+
+// options are cloud_acm, cloud_acm_ae5 and cloud_noop
+Module cloud/cloud_noop;
+
+// options are pa and pa_noop, which requires the replacement of the three
+// global include files with their pa_noop counterparts
+Module procan/pa;
+
+Module util/util_adj;
+
+Module chkpnt/chkpnt_ioapi;
+
