@@ -21,7 +21,7 @@
  setenv M3HOME  /home/563/spt563/cmaq/cmaq_adj
  setenv M3MODEL $M3HOME/CCTM
 # setenv M3DATA  /home/slc/bnmk/CMAQv5.0.1/data
- setenv COMPILER intel
+ setenv COMPILER gcc
 
 #===============================================================================
 
