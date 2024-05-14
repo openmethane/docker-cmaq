@@ -20,7 +20,7 @@ pushd ioapi-${IOAPI_VERSION} || exit
 # Copy in Makefile template
 # This uses the correct configuration for the built NetCDF library
 cp /opt/cmaq/templates/ioapi/Makefile Makefile
-cp /opt/cmaq/templates/ioapi/Makeinclude.Linux2_armgfort ioapi/
+cp /opt/cmaq/templates/ioapi/Makeinclude.* ioapi/
 # The following makefiles will be overridden by the .nocpl.sed templates
 # but need to exist for the configure step to work
 #touch ioapi/Makefile m3tools/Makefile
