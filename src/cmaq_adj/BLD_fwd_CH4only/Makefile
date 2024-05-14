@@ -7,19 +7,27 @@
 
 MODEL = ADJOINT_FWD
 
-FC = /apps/openmpi/4.0.2/bin/mpif90
-CC = /opt/nci/bin/cc
+#FC = /apps/openmpi/4.0.2/bin/mpif90
+#CC = /opt/nci/bin/cc
+FC = gfortran
+CC = gcc
 
-f_FLAGS    = -extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g -O2 -module ../BLD_fwd_CH4only/MOD_DIR -I.
+#f_FLAGS    = -extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g -O2 -module ../BLD_fwd_CH4only/MOD_DIR -I.
+f_FLAGS    = -ffixed-line-length-none -fallow-argument-mismatch  -fd-lines-as-comments -cpp -g -O2 -J../BLD_fwd_CH4only/MOD_DIR -I.
 F_FLAGS    = $(f_FLAGS)
 f90_FLAGS  = 
 F90_FLAGS  = $(f90_FLAGS)
-C_FLAGS    = -g -I/apps/openmpi/4.0.2/include
+#C_FLAGS    = -g -I/apps/openmpi/4.0.2/include
+C_FLAGS    = -g
 
 LINKER     = $(FC)
 LINK_FLAGS = -qopenmp
 
-REPOROOT = /home/563/ns0890/programs/cmaq_adj/modified_CCTM
+
+ROOT = $(PWD)/..
+IOAPI_ROOT = $(PWD)/../../ioapi-3.1/ioapi/
+
+REPOROOT = $(PWD)/../modified_CCTM
 
 CPP = $(FC)
 CPP_FLAGS = \
@@ -55,15 +63,16 @@ SE_SNL =  -L/home/563/ns0890/programs/CMAQv5.0.2/lib/x86_64/intel/se_snl -lse_sn
 PARIO =  -L/home/563/ns0890/programs/CMAQv5.0.2/lib/x86_64/intel/pario -lpario
 MPI =  -L/apps/openmpi/4.0.2/lib -lmpi
 MPI_MPIFH =  -L/apps/openmpi/4.0.2/lib/Intel -lmpi_mpifh
-IOAPI =  -L/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/Linux2_x86_64ifort -lioapi
-NETCDF =  -L/apps/netcdf/4.7.1/lib -lnetcdf
-NETCDFF =  -L/apps/netcdf/4.7.1/lib/Intel -lnetcdff
+IOAPI =  -L$(IOAPI_ROOT)/Linux2_x86_64ifort -lioapi
+NETCDF =  -lnetcdf
+NETCDFF =  -lnetcdff
 
 LIBRARIES = $(SE_SNL) $(PARIO) $(MPI) $(MPI_MPIFH) $(IOAPI) $(NETCDF) $(NETCDFF)
+LIBRARIES =  $(IOAPI) $(NETCDF) $(NETCDFF)
 
-BASE_INC = /home/563/ns0890/programs/cmaq_adj/ICL/fixed
-MECH_INC = /home/563/ns0890/programs/cmaq_adj/ICL/mech/cb05cl_ae5_aq_CH4only
-PA_INC = /home/563/ns0890/programs/cmaq_adj/ICL/procan/pa_noop
+BASE_INC = $(ROOT)/ICL/fixed
+MECH_INC = $(ROOT)/ICL/mech/cb05cl_ae5_aq_CH4only
+PA_INC = $(ROOT)/ICL/procan/pa_noop
 
 INCLUDES =  \
   -DSUBST_PE_COMM=\"$(BASE_INC)/par/PE_COMM.EXT\" \
@@ -71,9 +80,9 @@ INCLUDES =  \
   -DSUBST_FILES_ID=\"$(BASE_INC)/filenames/FILES_CTM.EXT\" \
   -DSUBST_EMPR_VD=\"$(BASE_INC)/emctrl/EMISPRM.vdif.EXT\" \
   -DSUBST_EMPR_CH=\"$(BASE_INC)/emctrl/EMISPRM.chem.EXT\" \
-  -DSUBST_IOPARMS=\"/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT\" \
-  -DSUBST_IOFDESC=\"/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT\" \
-  -DSUBST_IODECL=\"/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT\" \
+  -DSUBST_IOPARMS=\"$(IOAPI_ROOT)/fixed_src/PARMS3.EXT\" \
+  -DSUBST_IOFDESC=\"$(IOAPI_ROOT)/fixed_src/FDESC3.EXT\" \
+  -DSUBST_IODECL=\"$(IOAPI_ROOT)/fixed_src/IODECL3.EXT\" \
   -DSUBST_RXCMMN=\"$(MECH_INC)/RXCM.EXT\" \
   -DSUBST_RXDATA=\"$(MECH_INC)/RXDT.EXT\" \
   -DSUBST_GC_SPC=\"$(MECH_INC)/GC_SPC.EXT\" \
@@ -111,16 +120,16 @@ INCLUDES =  \
   -DSUBST_NR_N2AQ=\"$(MECH_INC)/NR_N2AQ.EXT\" \
   -DSUBST_NR_SCAV=\"$(MECH_INC)/NR_SCAV.EXT\" \
   -DSUBST_NR_WDEP=\"$(MECH_INC)/NR_WDEP.EXT\" \
-  -DSUBST_TR_SPC=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT\" \
-  -DSUBST_TR_EMIS=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT\" \
-  -DSUBST_TR_ICBC=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ICBC.EXT\" \
-  -DSUBST_TR_DIFF=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT\" \
-  -DSUBST_TR_DDEP=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DDEP.EXT\" \
-  -DSUBST_TR_DEPV=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT\" \
-  -DSUBST_TR_ADV=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT\" \
-  -DSUBST_TR_T2AQ=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_T2AQ.EXT\" \
-  -DSUBST_TR_SCAV=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SCAV.EXT\" \
-  -DSUBST_TR_WDEP=\"/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_WDEP.EXT\" \
+  -DSUBST_TR_SPC=\"$(ROOT)/ICL/mech/trac0/TR_SPC.EXT\" \
+  -DSUBST_TR_EMIS=\"$(ROOT)/ICL/mech/trac0/TR_EMIS.EXT\" \
+  -DSUBST_TR_ICBC=\"$(ROOT)/ICL/mech/trac0/TR_ICBC.EXT\" \
+  -DSUBST_TR_DIFF=\"$(ROOT)/ICL/mech/trac0/TR_DIFF.EXT\" \
+  -DSUBST_TR_DDEP=\"$(ROOT)/ICL/mech/trac0/TR_DDEP.EXT\" \
+  -DSUBST_TR_DEPV=\"$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT\" \
+  -DSUBST_TR_ADV=\"$(ROOT)/ICL/mech/trac0/TR_ADV.EXT\" \
+  -DSUBST_TR_T2AQ=\"$(ROOT)/ICL/mech/trac0/TR_T2AQ.EXT\" \
+  -DSUBST_TR_SCAV=\"$(ROOT)/ICL/mech/trac0/TR_SCAV.EXT\" \
+  -DSUBST_TR_WDEP=\"$(ROOT)/ICL/mech/trac0/TR_WDEP.EXT\" \
   -DSUBST_PACTL_ID=\"$(PA_INC)/PA_CTL.EXT\" \
   -DSUBST_PACMN_ID=\"$(PA_INC)/PA_CMN.EXT\" \
   -DSUBST_PADAT_ID=\"$(PA_INC)/PA_DAT.EXT\" \
@@ -316,355 +325,355 @@ $(MODEL): $(OBJS)
 	$(CC) -c $(C_FLAGS) $<
 
 clean:
-	rm -f $(OBJS) *.mod
+	rm -f $(OBJS) **/*.mod
 
 
 # dependencies
 
 ADJOINT_FILES.o:	GRID_CONF.F CHK_FILES_DEFS.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
-AVG_CONC.o:	VGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
+AVG_CONC.o:	VGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
 CGRID_SPCS.o:	$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
 GRID_CONF.o:	HGRD_DEFN.F VGRD_DEFN.F
-HGRD_DEFN.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-PCGRID_DEFN.o:	GRID_CONF.F CGRID_SPCS.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-STD_CONC.o:	HGRD_DEFN.F VGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
+HGRD_DEFN.o:	$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+PCGRID_DEFN.o:	GRID_CONF.F CGRID_SPCS.F $(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+STD_CONC.o:	HGRD_DEFN.F VGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_CONC.EXT $(MECH_INC)/AE_SPC.EXT \
 		$(MECH_INC)/AE_CONC.EXT $(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_CONC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
-VGRD_DEFN.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-WVEL_DEFN.o:	GRID_CONF.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
+VGRD_DEFN.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+WVEL_DEFN.o:	GRID_CONF.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 advstep.o:	GRID_CONF.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 driver_fwd.o:	PCGRID_DEFN.F VGRD_DEFN.F WVEL_DEFN.F STD_CONC.F \
 		AVG_CONC.F ADJOINT_FILES.F CHK_FILES_DEFS.F CHK_FILES.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/RXCM.EXT $(MECH_INC)/RXDT.EXT
-hcontvel.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+hcontvel.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 hveloc.o:	GRID_CONF.F $(BASE_INC)/par/PE_COMM.EXT $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-sciproc.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+sciproc.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(PA_INC)/PA_CTL.EXT
 syncstep.o:	GRID_CONF.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 wr_aconc.o:	GRID_CONF.F AVG_CONC.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 wr_cgrid.o:	GRID_CONF.F CGRID_SPCS.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
 wr_conc.o:	GRID_CONF.F STD_CONC.F WVEL_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
-par_init.o:	GRID_CONF.F PAGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
+par_init.o:	GRID_CONF.F PAGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(PA_INC)/PA_CTL.EXT /apps/openmpi/4.0.2/include/Intel/mpif.h
 par_term.o:	/apps/openmpi/4.0.2/include/Intel/mpif.h
-diffmsg.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-flcheck.o:	$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-grdcheck.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-initscen.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+diffmsg.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+flcheck.o:	$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+grdcheck.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+initscen.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
 load_cgrid.o:	GRID_CONF.F CGRID_SPCS.F $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ICBC.EXT $(MECH_INC)/GC_G2AE.EXT \
 		$(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_ICBC.EXT $(MECH_INC)/NR_SPC.EXT \
-		$(MECH_INC)/NR_ICBC.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ICBC.EXT
+		$(MECH_INC)/NR_ICBC.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ICBC.EXT
 opconc.o:	GRID_CONF.F WVEL_DEFN.F STD_CONC.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 setup_logdev.o:	/apps/openmpi/4.0.2/include/Intel/mpif.h
 couple.o:	GRID_CONF.F CGRID_SPCS.F CHK_FILES_DEFS.F CHK_FILES.F \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
 ppmv_msmr.o:	GRID_CONF.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-advbc_map.o:	$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+advbc_map.o:	$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_ICBC.EXT $(MECH_INC)/GC_ADV.EXT $(MECH_INC)/AE_ICBC.EXT \
 		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_ICBC.EXT $(MECH_INC)/NR_ADV.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ICBC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
+		$(ROOT)/ICL/mech/trac0/TR_ICBC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ADV.EXT
 hadv.o:	GRID_CONF.F CGRID_SPCS.F CHK_FILES_DEFS.F CHK_FILES.F \
-		$(BASE_INC)/par/PE_COMM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/par/PE_COMM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ADV.EXT $(MECH_INC)/AE_ADV.EXT \
-		$(MECH_INC)/NR_ADV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
+		$(MECH_INC)/NR_ADV.EXT $(ROOT)/ICL/mech/trac0/TR_ADV.EXT
 hppm.o:	HGRD_DEFN.F
 rdbcon.o:	GRID_CONF.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ICBC.EXT $(MECH_INC)/GC_ADV.EXT \
 		$(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_ICBC.EXT $(MECH_INC)/AE_ADV.EXT \
 		$(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_ICBC.EXT $(MECH_INC)/NR_ADV.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ICBC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ICBC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ADV.EXT
 xadv.o:	GRID_CONF.F CGRID_SPCS.F $(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ADV.EXT \
-		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_ADV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
+		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_ADV.EXT $(ROOT)/ICL/mech/trac0/TR_ADV.EXT
 yadv.o:	GRID_CONF.F CGRID_SPCS.F $(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ADV.EXT \
-		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_ADV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
-vppm.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT
+		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_ADV.EXT $(ROOT)/ICL/mech/trac0/TR_ADV.EXT
+vppm.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT
 zadvyppm.o:	GRID_CONF.F CGRID_SPCS.F WVEL_DEFN.F CHK_FILES_DEFS.F \
-		CHK_FILES.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		CHK_FILES.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_ADV.EXT $(MECH_INC)/AE_SPC.EXT \
 		$(MECH_INC)/AE_ADV.EXT $(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_ADV.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ADV.EXT
 deform.o:	GRID_CONF.F $(BASE_INC)/par/PE_COMM.EXT $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 hcdiff3d.o:	GRID_CONF.F $(BASE_INC)/par/PE_COMM.EXT $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 hdiff.o:	GRID_CONF.F CGRID_SPCS.F $(BASE_INC)/const/CONST.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_DIFF.EXT $(MECH_INC)/AE_DIFF.EXT $(MECH_INC)/NR_DIFF.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT
-rho_j.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(ROOT)/ICL/mech/trac0/TR_DIFF.EXT
+rho_j.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 AERO_EMIS.o:	GRID_CONF.F PT3D_DEFN.F PMEM_DEFN.F PTMAP.F $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
 		$(MECH_INC)/RXCM.EXT $(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/AE_SPC.EXT \
 		$(MECH_INC)/AE_EMIS.EXT
 BEIS_DEFN.o:	HGRD_DEFN.F BIOG_EMIS.F $(BASE_INC)/const/CONST.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT
-BIOG_EMIS.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-DEPVVARS.o:	HGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT $(ROOT)/ICL/mech/trac0/TR_EMIS.EXT
+BIOG_EMIS.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+DEPVVARS.o:	HGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT
 DEPV_DEFN.o:	HGRD_DEFN.F DEPVVARS.F GRID_CONF.F CGRID_SPCS.F $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
 		$(MECH_INC)/RXCM.EXT $(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_DEPV.EXT \
 		$(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_DEPV.EXT $(MECH_INC)/NR_SPC.EXT \
-		$(MECH_INC)/NR_DEPV.EXT $(MECH_INC)/NR_N2AE.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT
+		$(MECH_INC)/NR_DEPV.EXT $(MECH_INC)/NR_N2AE.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT
 EMIS_DEFN.o:	GRID_CONF.F CHK_FILES_DEFS.F CHK_FILES.F VDIFF_MAP.F \
 		BEIS_DEFN.F PT3D_DEFN.F PMEM_DEFN.F AERO_EMIS.F BIOG_EMIS.F \
 		PTMAP.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_EMIS.EXT \
-		$(MECH_INC)/NR_EMIS.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT
-PMEM_DEFN.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+		$(MECH_INC)/NR_EMIS.EXT $(ROOT)/ICL/mech/trac0/TR_EMIS.EXT
+PMEM_DEFN.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 PT3D_DEFN.o:	UDTYPES.F GRID_CONF.F STK_PRMS.F STK_EMIS.F PMEM_DEFN.F \
 		PTMET.F PTBILIN.F PTMAP.F VGRD_DEFN.F $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/AE_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT
+		$(ROOT)/ICL/mech/trac0/TR_EMIS.EXT
 PTBILIN.o:	UDTYPES.F HGRD_DEFN.F VGRD_DEFN.F STK_PRMS.F
 PTMAP.o:	UDTYPES.F STK_EMIS.F PMEM_DEFN.F $(MECH_INC)/GC_EMIS.EXT \
-		$(MECH_INC)/AE_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT
+		$(MECH_INC)/AE_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT $(ROOT)/ICL/mech/trac0/TR_EMIS.EXT
 PTMET.o:	UDTYPES.F STK_PRMS.F PTBILIN.F VGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-STK_EMIS.o:	UDTYPES.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-STK_PRMS.o:	UDTYPES.F HGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+STK_EMIS.o:	UDTYPES.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+STK_PRMS.o:	UDTYPES.F HGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 VDIFF_MAP.o:	CGRID_SPCS.F AERO_EMIS.F $(BASE_INC)/emctrl/EMISPRM.vdif.EXT \
-		$(BASE_INC)/emctrl/EMISPRM.chem.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/emctrl/EMISPRM.chem.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/GC_DIFF.EXT \
 		$(MECH_INC)/GC_DDEP.EXT $(MECH_INC)/GC_DEPV.EXT $(MECH_INC)/AE_SPC.EXT \
 		$(MECH_INC)/AE_DIFF.EXT $(MECH_INC)/AE_DDEP.EXT $(MECH_INC)/AE_DEPV.EXT \
 		$(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_EMIS.EXT $(MECH_INC)/NR_DIFF.EXT \
-		$(MECH_INC)/NR_DDEP.EXT $(MECH_INC)/NR_DEPV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DDEP.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT
+		$(MECH_INC)/NR_DDEP.EXT $(MECH_INC)/NR_DEPV.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_EMIS.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DIFF.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DDEP.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT
 beis3.o:	BIOG_EMIS.F
 cgrid_depv.o:	HGRD_DEFN.F $(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_DEPV.EXT \
 		$(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_DEPV.EXT $(MECH_INC)/NR_SPC.EXT \
-		$(MECH_INC)/NR_DEPV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT
-chkgrid.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+		$(MECH_INC)/NR_DEPV.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT
+chkgrid.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 conv_cgrid.o:	GRID_CONF.F CGRID_SPCS.F $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
-czangle.o:	$(BASE_INC)/const/CONST.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
+czangle.o:	$(BASE_INC)/const/CONST.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 eddyx.o:	GRID_CONF.F $(BASE_INC)/par/PE_COMM.EXT $(BASE_INC)/const/CONST.EXT \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 fire_plmris.o:	$(BASE_INC)/const/CONST.EXT
-gas_depv_map.o:	DEPVVARS.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+gas_depv_map.o:	DEPVVARS.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_DEPV.EXT $(MECH_INC)/NR_SPC.EXT \
-		$(MECH_INC)/NR_DEPV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT
-hrno.o:	HGRD_DEFN.F BIOG_EMIS.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+		$(MECH_INC)/NR_DEPV.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT
+hrno.o:	HGRD_DEFN.F BIOG_EMIS.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 m3dry.o:	HGRD_DEFN.F DEPVVARS.F $(BASE_INC)/const/CONST.EXT $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 matrix.o:	VGRD_DEFN.F $(MECH_INC)/GC_DIFF.EXT $(MECH_INC)/AE_DIFF.EXT \
-		$(MECH_INC)/NR_DIFF.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT
-opddep.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(MECH_INC)/NR_DIFF.EXT $(ROOT)/ICL/mech/trac0/TR_DIFF.EXT
+opddep.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_DDEP.EXT $(MECH_INC)/AE_DDEP.EXT $(MECH_INC)/NR_DDEP.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DDEP.EXT
+		$(ROOT)/ICL/mech/trac0/TR_DDEP.EXT
 opdepv_diag.o:	HGRD_DEFN.F DEPVVARS.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-opemis.o:	VGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
-		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT
-openlayout.o:	HGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-opmet.o:	$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-oppt3d_diag.o:	GRID_CONF.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+opemis.o:	VGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
+		$(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/NR_EMIS.EXT $(ROOT)/ICL/mech/trac0/TR_EMIS.EXT
+openlayout.o:	HGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+opmet.o:	$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+oppt3d_diag.o:	GRID_CONF.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 opssemis.o:	GRID_CONF.F AERO_EMIS.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 plmris.o:	$(BASE_INC)/const/CONST.EXT
-rddepv.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+rddepv.o:	HGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/RXCM.EXT $(MECH_INC)/GC_DEPV.EXT $(MECH_INC)/AE_DEPV.EXT \
-		$(MECH_INC)/NR_DEPV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT
-rdmet.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(MECH_INC)/NR_DEPV.EXT $(ROOT)/ICL/mech/trac0/TR_DEPV.EXT
+rdmet.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 ssemis.o:	AERO_EMIS.F
-tmpbeis.o:	HGRD_DEFN.F BIOG_EMIS.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT
+tmpbeis.o:	HGRD_DEFN.F BIOG_EMIS.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT
 tri.o:	VGRD_DEFN.F $(MECH_INC)/GC_DIFF.EXT $(MECH_INC)/AE_DIFF.EXT \
-		$(MECH_INC)/NR_DIFF.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT
+		$(MECH_INC)/NR_DIFF.EXT $(ROOT)/ICL/mech/trac0/TR_DIFF.EXT
 ungridb2.o:	HGRD_DEFN.F PTBILIN.F
 vdiffacm2.o:	CGRID_SPCS.F EMIS_DEFN.F DEPV_DEFN.F VDIFF_MAP.F \
 		CHK_FILES_DEFS.F CHK_FILES.F adj_array_mod.f $(BASE_INC)/const/CONST.EXT \
 		$(PA_INC)/PA_CTL.EXT
-phot_noop.o:	HGRD_DEFN.F VGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+phot_noop.o:	HGRD_DEFN.F VGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/RXCM.EXT
-chem_noop.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-aero_noop.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-aero_depv_noop.o:	HGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+chem_noop.o:	$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+aero_noop.o:	$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+aero_depv_noop.o:	HGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/AE_DEPV.EXT
-cloud_noop.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-hlconst.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-PAGRD_DEFN.o:	GRID_CONF.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+cloud_noop.o:	$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+hlconst.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+PAGRD_DEFN.o:	GRID_CONF.F $(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(PA_INC)/PA_CTL.EXT $(PA_INC)/PA_CMN.EXT
 pa_init.o:	GRID_CONF.F PAGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(PA_INC)/PA_CTL.EXT $(PA_INC)/PA_CMN.EXT $(PA_INC)/PA_DAT.EXT
 pa_irr.o:	GRID_CONF.F $(MECH_INC)/RXCM.EXT $(MECH_INC)/GC_SPC.EXT \
 		$(PA_INC)/PA_CMN.EXT
 pa_irr_ctl.o:	GRID_CONF.F PAGRD_DEFN.F $(MECH_INC)/GC_SPC.EXT \
 		$(PA_INC)/PA_CMN.EXT
-pa_mkhdr.o:	GRID_CONF.F PAGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
+pa_mkhdr.o:	GRID_CONF.F PAGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(PA_INC)/PA_CMN.EXT
 pa_output.o:	GRID_CONF.F PAGRD_DEFN.F $(BASE_INC)/filenames/FILES_CTM.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
 		$(PA_INC)/PA_CTL.EXT $(PA_INC)/PA_CMN.EXT
 pa_update.o:	PAGRD_DEFN.F AERO_EMIS.F $(BASE_INC)/const/CONST.EXT \
 		$(BASE_INC)/filenames/FILES_CTM.EXT $(BASE_INC)/emctrl/EMISPRM.vdif.EXT \
-		$(BASE_INC)/emctrl/EMISPRM.chem.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/emctrl/EMISPRM.chem.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/GC_DDEP.EXT \
 		$(MECH_INC)/GC_DEPV.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/AE_DDEP.EXT \
 		$(MECH_INC)/AE_DEPV.EXT $(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_EMIS.EXT \
-		$(MECH_INC)/NR_DDEP.EXT $(MECH_INC)/NR_DEPV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DDEP.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DEPV.EXT \
+		$(MECH_INC)/NR_DDEP.EXT $(MECH_INC)/NR_DEPV.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_EMIS.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DDEP.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DEPV.EXT \
 		$(PA_INC)/PA_CTL.EXT $(PA_INC)/PA_CMN.EXT
-cksummer.o:	GRID_CONF.F CGRID_SPCS.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+cksummer.o:	GRID_CONF.F CGRID_SPCS.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/AE_SPC.EXT $(MECH_INC)/NR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT
-lstepf.o:	$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-subhdomain.o:	/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
-subhfile.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(ROOT)/ICL/mech/trac0/TR_SPC.EXT
+lstepf.o:	$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+subhdomain.o:	$(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
+subhfile.o:	GRID_CONF.F $(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
 CHK_FILES.o:	GRID_CONF.F CHK_FILES_DEFS.F CHK_FILES_IMPL.F adj_array_mod.f \
-		$(BASE_INC)/filenames/FILES_CTM.EXT /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT \
+		$(BASE_INC)/filenames/FILES_CTM.EXT $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT \
 		$(MECH_INC)/GC_SPC.EXT $(MECH_INC)/GC_EMIS.EXT $(MECH_INC)/GC_DIFF.EXT \
 		$(MECH_INC)/GC_ADV.EXT $(MECH_INC)/GC_CONC.EXT $(MECH_INC)/AE_SPC.EXT \
 		$(MECH_INC)/AE_EMIS.EXT $(MECH_INC)/AE_DIFF.EXT $(MECH_INC)/AE_ADV.EXT \
 		$(MECH_INC)/AE_CONC.EXT $(MECH_INC)/NR_SPC.EXT $(MECH_INC)/NR_EMIS.EXT \
-		$(MECH_INC)/NR_DIFF.EXT $(MECH_INC)/NR_ADV.EXT /home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_SPC.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_EMIS.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_DIFF.EXT \
-		/home/563/ns0890/programs/cmaq_adj/ICL/mech/trac0/TR_ADV.EXT
-CHK_FILES_IMPL.o:	CHK_FILES_DEFS.F HGRD_DEFN.F VGRD_DEFN.F /home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/PARMS3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/FDESC3.EXT \
-		/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src/IODECL3.EXT
+		$(MECH_INC)/NR_DIFF.EXT $(MECH_INC)/NR_ADV.EXT $(ROOT)/ICL/mech/trac0/TR_SPC.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_EMIS.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_DIFF.EXT \
+		$(ROOT)/ICL/mech/trac0/TR_ADV.EXT
+CHK_FILES_IMPL.o:	CHK_FILES_DEFS.F HGRD_DEFN.F VGRD_DEFN.F $(IOAPI_ROOT)/fixed_src/PARMS3.EXT \
+		$(IOAPI_ROOT)/fixed_src/FDESC3.EXT \
+		$(IOAPI_ROOT)/fixed_src/IODECL3.EXT
