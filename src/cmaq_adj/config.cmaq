@@ -18,7 +18,7 @@
  set echo
 
 #> model repository location
- setenv M3HOME  /home/563/spt563/cmaq/cmaq_adj
+ setenv M3HOME  /opt/cmaq/cmaq_adj
  setenv M3MODEL $M3HOME/CCTM
 # setenv M3DATA  /home/slc/bnmk/CMAQv5.0.1/data
  setenv COMPILER gcc
@@ -85,7 +85,7 @@
 #< module load gcc-4.6 openmpi-1.4.3_gcc46
        setenv compiler gcc
        setenv compiler_ext gfort
-       setenv myFC /usr/local/gcc-4.6/bin/gfortran
+       setenv myFC gfortran
        setenv myCC gcc
        setenv myLINK_FLAG ""
        setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32"

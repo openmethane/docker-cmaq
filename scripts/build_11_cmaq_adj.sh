@@ -4,4 +4,6 @@
 set -x
 set -e
 
-echo "TODO"
+cd /opt/cmaq/cmaq_adj/BLD_fwd_CH4only
+
+make || exit 0
