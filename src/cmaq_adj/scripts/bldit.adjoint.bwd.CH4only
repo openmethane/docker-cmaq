@@ -14,8 +14,8 @@
 # =================================================================== #
 
 # CHANGE: put root repository directory here
- setenv M3MODEL /home/563/ns0890/programs/cmaq_adj
- setenv M3MODEL2 /home/563/ns0890/programs/CMAQv5.0.2
+ setenv M3MODEL /opt/cmaq/cmaq_adj
+ setenv M3MODEL2 /opt/cmaq/CMAQv5.0.2
 
 #===============================================================================
 
@@ -27,11 +27,11 @@
 # CHANGE: set M3LIB to base directory for MPI, netCDF, IOAPI, STENEX, PARIO libraries
  setenv lib_basedir ${M3MODEL2}/lib
  set MACH = `uname -m`
- setenv COMPILER intel
- setenv compiler_ext ifort
+ setenv COMPILER gcc
+ setenv compiler_ext gcc
  setenv M3LIB ${lib_basedir}/${system}/{$COMPILER}
  #setenv MPI_INC "/apps/openmpi/2.1.6/include -I/apps/openmpi/2.1.6/include/Intel"
- setenv MPI_INC "/apps/openmpi/4.0.2/include -I/apps/openmpi/4.0.2/include/Intel"
+ setenv MPI_INC "-I/usr/lib/aarch64-linux-gnu/openmpi/include"
 
 ## Check for M3MODEL and M3LIB settings:
  if ( ! -e $M3MODEL || ! -e $M3LIB ) then
@@ -239,26 +239,26 @@
  set FP = $FC
 
 # CHANGE: Set location of MPICH if using multiple processors
- set MPICH  =  "/apps/openmpi/4.0.2"
+ set MPICH  =  "/usr/lib/aarch64-linux-gnu/openmpi"
 
 # CHANGE: Set location for stenex library/include/and mod files
 # set STENEX = $M3LIB/se_noop
  set STENEX = ${M3LIB}/se_snl
 
 # CHANGE: Set compiler flags
- set FSTD       = "-extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g"
+ set FSTD       = "-ffixed-line-length-none -fd-lines-as-comments -cpp -g -O2 -I."
  set F_FLAGS    = "${FSTD} -O2 -module ${MODLOC} -I."
  set CPP_FLAGS  = ""
- set C_FLAGS    = "-g -DFLDMN -I/apps/openmpi/4.0.2/include"
+ set C_FLAGS    = "-g -DFLDMN -I${MPICH}/include"
  set LINK_FLAGS = "-qopenmp"
 
 # Set location of M3Bld executable
  set Blder = "$M3MODEL/BLDMAKE_git/bldmake -verbose"
 
 # CHANGE: Set location of libraries/include files
- set IOAPI =  "/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/Linux2_${system}${compiler_ext} -lioapi"
- set ICL_IOAPI = "/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src"
- set NETCDF = "/apps/netcdf/4.7.1/lib -lnetcdf -L/apps/netcdf/4.7.1/lib/Intel -lnetcdff"
+ set IOAPI =  "/opt/cmaq/CMAQv5.0.2/lib/ioapi-3.1/Linux2_${system}${compiler_ext} -lioapi"
+ set ICL_IOAPI = "/opt/cmaq/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src"
+ set NETCDF = "-lnetcdf  -lnetcdff"
  set PARIO = "${M3LIB}/pario -lpario"
 
 #:#:#:#:#:#:#:#:#:#:#:# End of User Input Section :#:#:#:#:#:#:#:#:#:#:#:#:#

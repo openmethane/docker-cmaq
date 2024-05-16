@@ -9,9 +9,12 @@ MODEL = ADJOINT_FWD
 
 #FC = /apps/openmpi/4.0.2/bin/mpif90
 #CC = /opt/nci/bin/cc
-FC = mpif90 -v
+FC = mpif90
 CC = mpicc
 
+ROOT = $(PWD)/..
+IOAPI_ROOT = $(PWD)/../../ioapi-3.1
+REPOROOT = $(PWD)/../modified_CCTM
 CMAQ_ROOT = "/opt/cmaq/CMAQ-5.0.2"
 
 #f_FLAGS    = -extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g -O2 -module ../BLD_fwd_CH4only/MOD_DIR -I.
@@ -24,12 +27,6 @@ C_FLAGS    =
 
 LINKER     = $(FC)
 LINK_FLAGS = -qopenmp
-
-
-ROOT = $(PWD)/..
-IOAPI_ROOT = $(PWD)/../../ioapi-3.1
-
-REPOROOT = $(PWD)/../modified_CCTM
 
 CPP = $(FC)
 CPP_FLAGS = \

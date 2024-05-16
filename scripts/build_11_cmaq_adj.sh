@@ -5,5 +5,7 @@ set -x
 set -e
 
 cd /opt/cmaq/cmaq_adj/BLD_fwd_CH4only
+make
 
-make || exit 0
+cd /opt/cmaq/cmaq_adj/BLD_bwd_CH4only
+make
