@@ -13,25 +13,8 @@
 #             http://www.cmascenter.org/help_desk.cfm                 #
 # =================================================================== #
 
-# CHANGE: put root repository directory here
- setenv M3MODEL /opt/cmaq/cmaq_adj
- setenv M3MODEL2 /opt/cmaq/CMAQ-5.0.2
 
-#===============================================================================
-
-#> architecture & compiler specific settings
-#-------------------------------------------------------------------------------
- setenv system "`/bin/uname -i`"
- setenv BLD_OS "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
-
-# CHANGE: set M3LIB to base directory for MPI, netCDF, IOAPI, STENEX, PARIO libraries
- setenv lib_basedir ${M3MODEL2}/lib
- set MACH = `uname -m`
- setenv COMPILER gcc
- setenv compiler_ext gfort
- setenv M3LIB ${lib_basedir}/${system}/{$COMPILER}
- #setenv MPI_INC "/apps/openmpi/2.1.6/include -I/apps/openmpi/2.1.6/include/Intel"
- setenv MPI_INC "-I/usr/lib/aarch64-linux-gnu/openmpi/include"
+source ../adjoint-config.csh
 
 ## Check for M3MODEL and M3LIB settings:
  if ( ! -e $M3MODEL || ! -e $M3LIB ) then
@@ -48,11 +31,6 @@
     exit 1
     endif
  set echo
-#while( 1 )
-#    switch( "$1" )
-#    endsw
-#    shift
-#end
 
 #:#:#:#:#:#:#:#:#:#:#:# Begin User Input Section #:#:#:#:#:#:#:#:#:#:#:#
 
@@ -232,34 +210,7 @@
  set MODLOC = ${Bld}/MOD_DIR
  if ( -d "$MODLOC" ) /bin/rm -Rf $MODLOC
  mkdir -p $MODLOC
-
-# CHANGE: Set full path of Fortran 90 and c compilers
- set FC = mpif90
- set CC = mpicc
- set FP = $FC
-
-# CHANGE: Set location of MPICH if using multiple processors
- set MPICH  =  "/usr/lib/aarch64-linux-gnu/openmpi"
-
-# CHANGE: Set location for stenex library/include/and mod files
-# set STENEX = $M3LIB/se_noop
- set STENEX = ${M3LIB}/se_snl
-
-# CHANGE: Set compiler flags
- set FSTD       = "-ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native"
- set F_FLAGS    = "${FSTD} -g -O2 -J${MODLOC} -I."
- set CPP_FLAGS  = ""
- set C_FLAGS    = "-g -DFLDMN -I${MPICH}/include"
- set LINK_FLAGS = "-fopenmp"
-
-# Set location of M3Bld executable
- set Blder = "$M3MODEL/BLDMAKE_git/bldmake -verbose"
-
-# CHANGE: Set location of libraries/include files
- set IOAPI =  "/opt/cmaq/ioapi-3.1/Linux2_${system}${compiler_ext} -lioapi"
- set ICL_IOAPI = "/opt/cmaq/ioapi-3.1/ioapi/fixed_src"
- set NETCDF = ". -lnetcdf  -lnetcdff"
- set PARIO = "${M3LIB}/pario -lpario"
+ set F_FLAGS    = "${F_FLAGS} -J${MODLOC}"
 
 #:#:#:#:#:#:#:#:#:#:#:# End of User Input Section :#:#:#:#:#:#:#:#:#:#:#:#:#
 
@@ -282,15 +233,14 @@
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
 
  if ( $?ParOpt ) then      # Multiprocessor system configuration
-    set Mpich = $MPICH
     set seL = se_snl
     cp -p ${STENEX}/*.mod $MODLOC
 #    cp -p ${STENEX}/se_*.mod ${STENEX}/swap_sandia.mod $Bld
-    set LIB2 = "-L${PARIO}"
+    set LIB2 = "${PARIO_FLAGS}"
     set LIB3 =
-    set LIB4 = "-L${Mpich}/lib -lmpi -lmpi_mpifh"
+    set LIB4 = "${MPICH_FLAGS}"
     set Str1 = (// Parallel / Include message passing definitions)
-    set Str2 = (include SUBST_MPICH ${Mpich}/include/mpif.h;)
+    set Str2 = (include SUBST_MPICH ${MPICH}/include/mpif.h;)
  else
     set Mpich =           # Single processor system configuration
     set seL = sef90_noop
@@ -304,8 +254,8 @@
  endif
 
  set LIB1 = "-L${STENEX} -l${seL}"
- set LIB5 = "-L${IOAPI}"
- set LIB6 = "-L${NETCDF}"
+ set LIB5 = "${IOAPI_FLAGS}"
+ set LIB6 = "${NETCDF_FLAGS}"
  set LIBS = "$LIB1 $LIB2 $LIB3 $LIB4 $LIB5 $LIB6"
 
 #source $Base/relinc3.cctm_adj
@@ -587,7 +537,6 @@
  cd $Adj_Home
 #set brnch = `git --work-tree=$M3MODEL branch`
 # set brnch = `git branch`
-#set brnch = "test"
 # @ i = 0
 # while ( $i < $#brnch )
 #    @ i++

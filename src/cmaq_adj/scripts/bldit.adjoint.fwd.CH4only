@@ -13,24 +13,8 @@
 #             http://www.cmascenter.org/help_desk.cfm                 #
 # =================================================================== #
 
-# CHANGE: put root repository directory here
- setenv M3MODEL /home/563/ns0890/programs/cmaq_adj
- setenv M3MODEL2 /home/563/ns0890/programs/CMAQv5.0.2
 
-#===============================================================================
-
-#> architecture & compiler specific settings
-#-------------------------------------------------------------------------------
- setenv system "`/bin/uname -i`"
- setenv BLD_OS "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
-
-# CHANGE: set M3LIB to base directory for MPI, netCDF, IOAPI, STENEX, PARIO libraries
- setenv lib_basedir ${M3MODEL2}/lib
- set MACH = `uname -m`
- setenv COMPILER intel
- setenv compiler_ext ifort
- setenv M3LIB ${lib_basedir}/${system}/{$COMPILER}
- setenv MPI_INC "/apps/openmpi/4.0.2/include -I/apps/openmpi/4.0.2/include/Intel"
+source ../adjoint-config.csh
 
 ## Check for M3MODEL and M3LIB settings:
  if ( ! -e $M3MODEL || ! -e $M3LIB ) then
@@ -61,7 +45,7 @@
  setenv REPOROOT ${M3MODEL}/modified_CCTM
 
 #> user choices: base working directory
- set Base = ..    #$cwd
+ set Base = ${M3MODEL}    #$cwd
 
 # set APPL  = test
 # set APPL  = aero_adj
@@ -222,36 +206,7 @@
  set MODLOC = ${Bld}/MOD_DIR
  if ( -d "$MODLOC" ) /bin/rm -Rf $MODLOC
  mkdir -p $MODLOC
-
-# CHANGE: Set full path of Fortran 90 and c compilers
-# set FC = /apps/openmpi/wrapper/fortran/mpif90
-# set CC = /apps/openmpi/2.1.6/bin/mpicc
- set FC = mpif90
- set CC = mpicc
- set FP = $FC
- 
-# CHANGE: Set location of MPICH if using multiple processors
- set MPICH  =  "/apps/openmpi/4.0.2"
-
-# CHANGE: Set location for stenex library/include/and mod files
-# set STENEX = $M3LIB/se_noop
- set STENEX = ${M3LIB}/se_snl
-
-# CHANGE: Set compiler flags
- set FSTD       = "-extend_source 132 -qopt-report0 -nodefines -warn nousage -stand none -traceback -CB -c -g"
- set F_FLAGS    = "${FSTD} -O2 -module ${MODLOC} -I."
- set CPP_FLAGS  = ""
- set C_FLAGS    = "-g -I/apps/openmpi/4.0.2/include"
- set LINK_FLAGS = "-qopenmp"
-
-# Set location of M3Bld executable
- set Blder = "$M3MODEL/BLDMAKE_git/bldmake -verbose"
-
-# CHANGE: Set location of libraries/include files
- set IOAPI =  "/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/Linux2_${system}${compiler_ext} -lioapi"
- set ICL_IOAPI = "/home/563/ns0890/programs/CMAQv5.0.2/lib/ioapi-3.1/ioapi/fixed_src"
- set NETCDF = "/apps/netcdf/4.7.1/lib -lnetcdf -L/apps/netcdf/4.7.1/lib/Intel -lnetcdff"
- set PARIO = "${M3LIB}/pario -lpario"
+ set F_FLAGS    = "${F_FLAGS} -J${MODLOC}"
 
 #:#:#:#:#:#:#:#:#:#:#:# End of User Input Section :#:#:#:#:#:#:#:#:#:#:#:#:#
 
@@ -274,15 +229,14 @@
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
 
  if ( $?ParOpt ) then      # Multiprocessor system configuration
-    set Mpich = "$MPICH"
     set seL = se_snl
     cp -p ${STENEX}/*.mod $MODLOC
 #    cp -p ${STENEX}/se_*.mod ${STENEX}/swap_sandia.mod $Bld
-    set LIB2 = "-L${PARIO}"
+    set LIB2 = "${PARIO_FLAGS}"
     set LIB3 =
-    set LIB4 = "-L${Mpich}/lib -lmpi -L${Mpich}/lib/Intel -lmpi_mpifh"
+    set LIB4 = "${MPICH_FLAGS}"
     set Str1 = (// Parallel / Include message passing definitions)
-    set Str2 = (include SUBST_MPICH ${Mpich}/include/Intel/mpif.h;)
+    set Str2 = (include SUBST_MPICH ${MPICH}/include/mpif.h;)
  else
     set Mpich =           # Single processor system configuration
     set seL = sef90_noop
@@ -296,8 +250,8 @@
  endif
 
  set LIB1 = "-L${STENEX} -l${seL}"
- set LIB5 = "-L${IOAPI}"
- set LIB6 = "-L${NETCDF}"
+ set LIB5 = "${IOAPI_FLAGS}"
+ set LIB6 = "${NETCDF_FLAGS}"
  set LIBS = "$LIB1 $LIB2 $LIB3 $LIB4 $LIB5 $LIB6"
 
 #source $Base/relinc3.cctm_adj
@@ -578,18 +532,18 @@
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
  cd $Adj_Home
 #set brnch = `git --work-tree=$M3MODEL branch`
- set brnch = `git branch`
- @ i = 0
- while ( $i < $#brnch )
-    @ i++
-    if ( "$brnch[$i]" == "*" ) @ l = $i + 1
- end
-#set rep = `echo $M3MODEL | tr "/" "#"`
- set rep = `echo $cwd | tr "/" "#"`
- set rln = "repo:${rep},branch:${brnch[$l]},compiler:${COMPILER}"
- set ref = $Bld/$rln
- /bin/touch $ref
- if ( -d $Adj_Home/branch ) /bin/cp $Adj_Home/branch/branch.* $Bld
+# set brnch = `git branch`
+# @ i = 0
+# while ( $i < $#brnch )
+#    @ i++
+#    if ( "$brnch[$i]" == "*" ) @ l = $i + 1
+# end
+##set rep = `echo $M3MODEL | tr "/" "#"`
+# set rep = `echo $cwd | tr "/" "#"`
+# set rln = "repo:${rep},branch:${brnch[$l]},compiler:${COMPILER}"
+# set ref = $Bld/$rln
+# /bin/touch $ref
+# if ( -d $Adj_Home/branch ) /bin/cp $Adj_Home/branch/branch.* $Bld
 
 # /bin/cp -r $Adj_Home
 

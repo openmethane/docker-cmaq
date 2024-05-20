@@ -1,0 +1,8 @@
+# Previous build artifacts
+*.o
+*.mod
+
+# Prebuilt binaries
+bldmake
+ADJOINT_BWD
+ADJOINT_FWD

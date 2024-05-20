@@ -2,10 +2,10 @@ model       ADJOINT_BWD;
 FPP         mpif90;
 cpp_flags   "  -Dparallel -Dcluster -DINTERPB=PINTERPB -DM3ERR=PM3ERR -DM3EXIT=PM3EXIT -DM3WARN=PM3WARN -DSHUT3=PSHUT3 -DWRITE3=PWRITE3 -DSUBST_MODULES=SE_MODULES -DSUBST_BARRIER=SE_BARRIER -DSUBST_GLOBAL_MAX=SE_GLOBAL_MAX -DSUBST_GLOBAL_MIN=SE_GLOBAL_MIN -DSUBST_GLOBAL_MIN_DATA=SE_GLOBAL_MIN_DATA -DSUBST_GLOBAL_TO_LOCAL_COORD=SE_GLOBAL_TO_LOCAL_COORD -DSUBST_GLOBAL_SUM=SE_GLOBAL_SUM -DSUBST_GLOBAL_LOGICAL=SE_GLOBAL_LOGICAL -DSUBST_LOOP_INDEX=SE_LOOP_INDEX -DSUBST_SUBGRID_INDEX=SE_SUBGRID_INDEX -DSUBST_HI_LO_BND_PE=SE_HI_LO_BND_PE -DSUBST_SUM_CHK=SE_SUM_CHK -DSUBST_INIT_ARRAY=SE_INIT_ARRAY -DSUBST_COMM=SE_COMM -DSUBST_MY_REGION=SE_MY_REGION -DSUBST_SLICE=SE_SLICE -DSUBST_GATHER=SE_GATHER -DSUBST_DATA_COPY=SE_DATA_COPY -DSUBST_IN_SYN=SE_IN_SYN";
 f_compiler  mpif90;
-f_flags     "-ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native -g -O2 -J/opt/cmaq/cmaq_adj/BLD_bwd_CH4only/MOD_DIR -I.";
+f_flags     "-ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native -g -O2 -J/opt/cmaq/cmaq_adj/BLD_bwd_CH4only/MOD_DIR";
 c_flags     "-g -DFLDMN -I/usr/lib/aarch64-linux-gnu/openmpi/include";
 link_flags  "-fopenmp";
-libraries   "-L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/se_snl -lse_snl -L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/pario -lpario  -L/usr/lib/aarch64-linux-gnu/openmpi/lib -lmpi -lmpi_mpifh -L/opt/cmaq/ioapi-3.1/Linux2_aarch64gfort -lioapi -L. -lnetcdf  -lnetcdff";
+libraries   "-L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/se_snl -lse_snl -L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/pario -lpario  -L/usr/lib/aarch64-linux-gnu/openmpi/lib -lmpi -lmpi_mpifh -L/opt/cmaq/ioapi-3.1/Linux2_aarch64gfort -lioapi -lnetcdf  -lnetcdff";
 global      verbose;
 // mechanism and tracer: mech/cb05cl_ae5_aq_CH4only, mech/trac0
 // project archive: /opt/cmaq/cmaq_adj/modified_CCTM

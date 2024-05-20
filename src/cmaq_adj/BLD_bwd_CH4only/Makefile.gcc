@@ -1,6 +1,6 @@
 #   Makefile generated using program [bldmake]
 #
-#   Generation date [05/20/2024  09:01:41]
+#   Generation date [05/20/2024  13:30:04]
 #   Configuration file [cfg.bwd_CH4only.bld]
 #   Using GIT repository
 #
@@ -10,7 +10,7 @@ MODEL = ADJOINT_BWD
 FC = /usr/bin/mpif90
 CC = /usr/bin/cc
 
-f_FLAGS    = -ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native -g -O2 -J/opt/cmaq/cmaq_adj/BLD_bwd_CH4only/MOD_DIR -I.
+f_FLAGS    = -ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native -g -O2 -J/opt/cmaq/cmaq_adj/BLD_bwd_CH4only/MOD_DIR
 F_FLAGS    = $(f_FLAGS)
 f90_FLAGS  = 
 F90_FLAGS  = $(f90_FLAGS)
@@ -54,10 +54,9 @@ CPP_FLAGS = \
 SE_SNL =  -L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/se_snl -lse_snl
 PARIO =  -L/opt/cmaq/CMAQ-5.0.2/lib/aarch64/gcc/pario -lpario
 INUX-GNU/OPENMPI/LIB =  -L/usr/lib/aarch64-linux-gnu/openmpi/lib -lmpi -lmpi_mpifh
-IOAPI =  -L/opt/cmaq/ioapi-3.1/Linux2_aarch64gfort -lioapi
-NETCDF =  -L. -lnetcdf -lnetcdff
+IOAPI =  -L/opt/cmaq/ioapi-3.1/Linux2_aarch64gfort -lioapi -lnetcdf -lnetcdff
 
-LIBRARIES = $(SE_SNL) $(PARIO) $(INUX-GNU/OPENMPI/LIB) $(IOAPI) $(NETCDF)
+LIBRARIES = $(SE_SNL) $(PARIO) $(INUX-GNU/OPENMPI/LIB) $(IOAPI)
 
 BASE_INC = /opt/cmaq/cmaq_adj/ICL/fixed
 MECH_INC = /opt/cmaq/cmaq_adj/ICL/mech/cb05cl_ae5_aq_CH4only
