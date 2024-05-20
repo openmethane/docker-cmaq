@@ -32,23 +32,26 @@ pushd scripts
 # Update the netcdf libraries
 find ./ -type f -exec sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/g' {} \;
 
-# List of models to build
-# The first item is the directory to build
-# The second item is the target
-OPTIONS=build,bldmake pario,pario stenex,se icon,icon bcon,bcon mcip,mcip cctm,cctm
+#  Build the builder first
+pushd build
+  echo "Building build"
+  ./bldit.bldmake >&! bldit.build.log
+popd
+
+# stenex has a different named run script
+pushd stenex
+  echo "Building stenex"
+  ./bldit.se >&! bldit.stenex.log
+popd
 
 
-OLDIFS=$IFS
-IFS=',';
-for item in $OPTIONS; do
-    # split the string using a comma into $1 and $2
-    set -- $item;
-    pushd $1
-    echo "Building $item"
-    ./bldit.$item >&! bldit.$item.log
-    popd
+# Loop over the other models to be built
+for item in pario icon bcon mcip cctm; do
+  pushd $item
+  echo "Building $item"
+  ./bldit.$item >&! bldit.$item.log
+  popd
 done
-IFS=$OLDIFS
 
 popd
 popd
