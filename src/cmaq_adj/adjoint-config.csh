@@ -27,7 +27,7 @@ setenv CC mpicc
 setenv FP $FC
 
 # CHANGE: Set location of MPICH if using multiple processors
-setenv MPICH  "/usr/lib/aarch64-linux-gnu/openmpi"
+setenv MPICH  "/usr/lib/${ARCH}-linux-gnu/openmpi"
 
 # CHANGE: Set location for stenex library/include/and mod files
 # setenv STENEX   $M3LIB/se_noop
