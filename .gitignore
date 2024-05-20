@@ -3,3 +3,8 @@ keys
 logs
 secrets*
 .env
+
+*.o
+*.mod
+ADJOINT_*
+bldmake
