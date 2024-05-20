@@ -4,12 +4,10 @@
 set -x
 set -e
 
+source $PWD/scripts/common.sh
+
 IOAPI_VERSION="3.1"
 
-# Setup the build environment for iotools
-export BIN=${BIN:-Linux2_x86_64gfort}
-export BASEDIR=$PWD
-export CPLMODE=nocpl
 
 # Build IOAPI
 wget -nv https://www.cmascenter.org/ioapi/download/ioapi-${IOAPI_VERSION}.tar.gz  -O ioapi-${IOAPI_VERSION}.tar.gz

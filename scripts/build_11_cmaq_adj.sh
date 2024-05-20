@@ -4,11 +4,26 @@
 set -x
 set -e
 
+source $PWD/scripts/common.sh
+
 cd /opt/cmaq/cmaq_adj/BLDMAKE_git
 make
 
 cd /opt/cmaq/cmaq_adj/scripts
-csh bldit.adjoint.bwd.CH4only
-# csh bldit.adjoint.fwd.CH4only
 
-# TODO Verify the output exists
+# Build the Backward adjoint model
+csh bldit.adjoint.bwd.CH4only
+
+if [[ ! -f /opt/cmaq/cmaq_adj/BLD_bwd_CH4only/ADJOINT_BWD ]]; then
+    echo "Backward adjoint failed to build"
+    exit 1
+fi
+
+# Build the Forward adjoint model
+csh bldit.adjoint.fwd.CH4only
+
+if [[ ! -f /opt/cmaq/cmaq_adj/BLD_bwd_CH4only/ADJOINT_BWD ]]; then
+    echo "Forward adjoint failed to build"
+    exit 1
+fi
+

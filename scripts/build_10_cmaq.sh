@@ -4,23 +4,28 @@
 set -x
 set -e
 
-IOAPI_VERSION="3.1"
+source $PWD/scripts/common.sh
+
 CMAQ_VERSION=${CMAQ_VERSION:-"5.0.2"}
+DOI="1079898" # This is implicitly the DOI for CMAQ 5.0.2
 
 # Setup the build environment for iotools
-export BIN=${BIN:-Linux2_x86_64gfort}
+ARCH=$(uname -i)
+export ARCH
+export BIN=Linux2_${ARCH}gfort
 export BASEDIR=$PWD
 export CPLMODE=nocpl
 
 # Build IOAPI
-wget -nv https://zenodo.org/records/1079898/files/CMAQ-5.0.2.zip  -O CMAQ-5.0.2.zip
-unzip CMAQ-5.0.2.zip
-pushd CMAQ-5.0.2 || exit
+cmaq_dirname=CMAQ-${CMAQ_VERSION}
+wget -nv https://zenodo.org/records/${DOI}/files/${cmaq_dirname}.zip  -O ${cmaq_dirname}.zip
+unzip ${cmaq_dirname}.zip
+pushd ${cmaq_dirname} || exit
 
 # Link in the required libraries
 cp /opt/cmaq/templates/CMAQ/scripts/config.cmaq scripts/config.cmaq
-mkdir -p /opt/cmaq/CMAQ-5.0.2/lib/${ARCH}/gcc/
-ln -s /opt/cmaq/ioapi-3.1 /opt/cmaq/CMAQ-5.0.2/lib/${ARCH}/gcc/ioapi_3.1
+mkdir -p /opt/cmaq/${cmaq_dirname}/lib/${ARCH}/gcc/
+ln -s /opt/cmaq/ioapi-3.1 /opt/cmaq/${cmaq_dirname}/lib/${ARCH}/gcc/ioapi_3.1
 
 pushd scripts
 
@@ -43,4 +48,4 @@ popd
 popd
 popd
 
-rm CMAQ-5.0.2.zip
+rm ${cmaq_dirname}.zip
