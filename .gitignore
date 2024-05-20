@@ -4,7 +4,11 @@ logs
 secrets*
 .env
 
+# Previous build artifacts
 *.o
 *.mod
-ADJOINT_*
+
+# Prebuilt binaries
 bldmake
+ADJOINT_BWD
+ADJOINT_FWD
