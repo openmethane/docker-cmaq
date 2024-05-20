@@ -4,8 +4,11 @@
 set -x
 set -e
 
-cd /opt/cmaq/cmaq_adj/BLD_fwd_CH4only
+cd /opt/cmaq/cmaq_adj/BLDMAKE_git
 make
 
-cd /opt/cmaq/cmaq_adj/BLD_bwd_CH4only
-make
+cd /opt/cmaq/cmaq_adj/scripts
+csh bldit.adjoint.bwd.CH4only
+# csh bldit.adjoint.fwd.CH4only
+
+# TODO Verify the output exists
