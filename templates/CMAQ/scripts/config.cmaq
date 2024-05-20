@@ -94,7 +94,7 @@ setenv extra_lib
 #> generate library locations
        setenv M3LIB ${lib_basedir}/${system}/${compiler}
        if ( ! -d $M3LIB ) mkdir -p $M3LIB
-       setenv MPI_INC $M3LIB/mpich/include
+       setenv MPI_INC /usr/lib/${ARCH}-linux-gnu/openmpi/include
 
 #> set executable id
  setenv EXEC_ID ${bld_os}_${system}${compiler}

@@ -88,13 +88,13 @@
        setenv myFC gfortran
        setenv myCC gcc
        setenv myLINK_FLAG ""
-       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32"
-       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32"
-       setenv myCFLAGS "-O2"
+       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
+       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
+       setenv myCFLAGS "-O2 -march=native -mtune=native"
        setenv mpi "-lmpich"
        setenv extra_lib
 ######## vvvvv infinity
-#      setenv extra_lib "$extra_lib -lgomp"
+        setenv extra_lib "$extra_lib -fopenmp"
        breaksw
 
     default:
@@ -108,8 +108,7 @@
 
 #> generate library locations
        setenv M3LIB ${lib_basedir}/${system}/${compiler}
-       setenv MPI_INC $M3LIB/mpich/include
-       setenv MPI_INC 
+       setenv MPI_INC /usr/lib/${ARCH}-linux-gnu/openmpi/include
 
 #> set executable id
  setenv EXEC_ID ${bld_os}_${system}${compiler}

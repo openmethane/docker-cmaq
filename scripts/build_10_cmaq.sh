@@ -16,6 +16,8 @@ export BIN=Linux2_${ARCH}gfort
 export BASEDIR=$PWD
 export CPLMODE=nocpl
 
+ROOT=$PWD
+
 # Build IOAPI
 cmaq_dirname=CMAQ-${CMAQ_VERSION}
 wget -nv https://zenodo.org/records/${DOI}/files/${cmaq_dirname}.zip  -O ${cmaq_dirname}.zip
@@ -46,14 +48,24 @@ popd
 
 
 # Loop over the other models to be built
-for item in pario icon bcon mcip cctm; do
+for item in pario icon bcon; do
   pushd $item
   echo "Building $item"
-  ./bldit.$item >&! bldit.$item.log
+  ./bldit.$item
   popd
 done
 
-popd
-popd
+pushd mcip/src
 
-rm ${cmaq_dirname}.zip
+# MCIP doesn't have an associated blidit script
+echo "Building mcip"
+
+FC=mpif90
+FFLAGS="-O3 -I${ROOT}/ioapi-3.1/${BIN} $(nf-config --fflags)"
+LIBS="-L${ROOT}/ioapi-3.1/${BIN} -lioapi -lnetcdf -lnetcdff -fopenmp"
+
+FC=$FC FFLAGS=$FFLAGS LIBS=$LIBS make
+
+[[ -f mcip.exe ]] || { echo "MCIP failed to build"; exit 1; }
+
+rm $ROOT/${cmaq_dirnasme}.zip
