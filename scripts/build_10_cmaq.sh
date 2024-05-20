@@ -68,4 +68,4 @@ FC=$FC FFLAGS=$FFLAGS LIBS=$LIBS make
 
 [[ -f mcip.exe ]] || { echo "MCIP failed to build"; exit 1; }
 
-rm $ROOT/${cmaq_dirnasme}.zip
+rm $ROOT/${cmaq_dirname}.zip
