@@ -7,7 +7,7 @@
 # Code locations
 
 setenv M3MODEL /opt/cmaq/cmaq_adj
-setenv CMAQ_HOME /opt/cmaq/CMAQ-5.0.2
+setenv CMAQ_HOME /opt/cmaq/CMAQv5.0.2_notpollen
 setenv IOAPI_HOME /opt/cmaq/ioapi-3.1
 
 #> architecture & compiler specific settings
