@@ -68,6 +68,7 @@ jobs:
         uses: docker/build-push-action@v5
         id: build
         with:
+          context: .
           build-args: |
             CMAQ_VERSION=${{ env.CMAQ_VERSION }}
           platforms: ${{ matrix.platform }}
