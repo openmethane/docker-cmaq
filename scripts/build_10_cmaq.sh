@@ -52,7 +52,7 @@ pushd mcip/src
 echo "Building mcip"
 
 FC=mpif90
-FFLAGS="-g -O3 -I${ROOT}/ioapi-3.1/${BIN} $(nf-config --fflags)"
+FFLAGS="-g -O0 -I${ROOT}/ioapi-3.1/${BIN} $(nf-config --fflags)"
 LIBS="-L${ROOT}/ioapi-3.1/${BIN} -lioapi -lnetcdf -lnetcdff -fopenmp"
 
 FC=$FC FFLAGS=$FFLAGS LIBS=$LIBS make
