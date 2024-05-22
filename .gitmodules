@@ -1,0 +1,4 @@
+[submodule "src/CMAQv5.0.2_notpollen"]
+	path = src/CMAQv5.0.2_notpollen
+	url = git@github.com:openmethane/CMAQ.git
+	branch = ch4-only
