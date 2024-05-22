@@ -33,8 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ssh-key: |
-            ${{ secrets.CMAQ_DEPLOY_KEY }}
+          ssh-key: ${{ secrets.CMAQ_DEPLOY_KEY }}
           submodules: recursive
       - name: Prepare
         run: |
