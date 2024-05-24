@@ -17,11 +17,9 @@ FC   = gfortran
 M4   = m4
 LINK = $(CC)
 
-## Module-include-directory command
-MODI = -I
-E132 = -ffixed-line-length-132
+MODI = -J       ## Module-include-directory command
 
-MFLAGS    = -ffast-math -funroll-loops -march=native -mtune=native #  -Wall -Wsurprising
+MFLAGS    = -ffast-math -funroll-loops -m64  -march=native -mtune=native #  -Wall -Wsurprising
 
 OMPFLAGS  = -fopenmp
 OMPLIBS   = -fopenmp
@@ -38,5 +36,5 @@ ARCHFLAGS = \
 PARFLAGS  =
 ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc `nf-config --flibs`
 
-# M4DEFFILE = $(PVM_ROOT)/conf/$(PVM_ARCH).m4
-# PVMLIBS   = -lpvm3
+M4DEFFILE = $(PVM_ROOT)/conf/$(PVM_ARCH).m4
+PVMLIBS   = -lpvm3
