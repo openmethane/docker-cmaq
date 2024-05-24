@@ -41,7 +41,7 @@ setenv C_FLAGS    "-g -DFLDMN -I${MPICH}/include"
 setenv LINK_FLAGS "-fopenmp"
 # CHANGE: Set location of libraries/include files
 setenv IOAPI_FLAGS  "-L${IOAPI_HOME}/Linux2_${system}${compiler_ext} -lioapi"
-setenv NETCDF_FLAGS  "$(nf-config --flibs)"
+setenv NETCDF_FLAGS  "`nf-config --flibs`"
 setenv PARIO_FLAGS "-L${M3LIB}/pario -lpario"
 setenv MPICH_FLAGS "-L${MPICH}/lib -lmpi -lmpi_mpifh"
 
