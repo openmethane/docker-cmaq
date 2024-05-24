@@ -14,6 +14,7 @@ WORKDIR /opt/cmaq
 
 COPY --from=ghcr.io/climate-resource/wrf:4.5.1 /opt/wrf/libs /opt/wrf/libs
 ENV PATH="/opt/wrf/libs/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/wrf/libs/lib:${LD_LIBRARY_PATH}"
 
 # Build IOAPI
 COPY templates/ioapi /opt/cmaq/templates/ioapi
