@@ -18,7 +18,7 @@ M4   = m4
 LINK = $(CC)
 
 ## Module-include-directory command
-MODI = -I
+MODI = -I -L/opt/wrf/libs/lib
 E132 = -ffixed-line-length-132
 
 MFLAGS    = -ffast-math -funroll-loops -march=native -mtune=native #  -Wall -Wsurprising
