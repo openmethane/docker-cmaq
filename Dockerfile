@@ -7,10 +7,13 @@ ENV CMAQ_VERSION="5.0.2"
 ENV TZ=Etc/UTC
 
 RUN apt-get update && \
-    apt-get install -y build-essential gfortran m4 csh git jq wget libopenmpi-dev libnetcdff-dev unzip && \
+    apt-get install -y build-essential gfortran m4 csh git jq wget libopenmpi-dev unzip && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/cmaq
+
+COPY --from=ghcr.io/climate-resource/wrf:4.5.1 /opt/wrf/libs /opt/wrf/libs
+ENV PATH="/opt/wrf/libs/bin:${PATH}"
 
 # Build IOAPI
 COPY templates/ioapi /opt/cmaq/templates/ioapi
