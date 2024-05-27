@@ -19,12 +19,12 @@ LINK = $(CC)
 
 MODI = -J       ## Module-include-directory command
 
-MFLAGS    = -ffast-math -funroll-loops -m64  -march=native -mtune=native #  -Wall -Wsurprising
+MFLAGS    = -ffast-math -funroll-loops -m64 # -march=native -mtune=native #  -Wall -Wsurprising
 
 OMPFLAGS  = -fopenmp
 OMPLIBS   = -fopenmp
-COPTFLAGS = -O3 ${MFLAGS}
-FOPTFLAGS = -O3 ${MFLAGS}
+COPTFLAGS = -g -O3 ${MFLAGS}
+FOPTFLAGS = -g -O3 ${MFLAGS}
 FPPFLAGS  = -DF90=1
 FSFLAGS   = -fno-automatic
 ARCHFLAGS = \
