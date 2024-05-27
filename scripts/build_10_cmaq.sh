@@ -39,7 +39,7 @@ popd
 
 
 # Loop over the other models to be built
-for item in pario icon bcon; do
+for item in pario icon bcon cctm; do
   pushd $item
   echo "Building $item"
   ./bldit.$item
@@ -61,8 +61,12 @@ FC=$FC FFLAGS=$FFLAGS LIBS=$LIBS make
 popd
 
 # Check that BCON and ICON were built
+BUILD_DIR=BLD_CH4only
+SUFFIX=CH4only_Linux2_x86_64gfortran_profile_CH4only
 
-ls bcon/BLD_CH4only
-ls icon/BLD_CH4only
-[[ -f bcon/BLD_CH4only/BCON_CH4only_Linux2_x86_64gfortran_profile_CH4only ]] || { echo "BCON failed to build"; exit 1; }
-[[ -f icon/BLD_CH4only/ICON_CH4only_Linux2_x86_64gfortran_profile_CH4only ]] || { echo "ICON failed to build"; exit 1; }
+ls bcon/$BUILD_DIR
+ls icon/$BUILD_DIR
+ls cctm/$BUILD_DIR
+[[ -f bcon/$BUILD_DIR/BCON_$SUFFIX ]] || { echo "BCON failed to build"; exit 1; }
+[[ -f icon/$BUILD_DIR/ICON_$SUFFIX ]] || { echo "ICON failed to build"; exit 1; }
+[[ -f cctm/$BUILD_DIR/CCTM_CH4only_Linux2_x86_64gfortran ]] || { echo "CCTM failed to build"; exit 1; }
