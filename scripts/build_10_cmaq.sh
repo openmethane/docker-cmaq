@@ -58,3 +58,11 @@ LIBS="-L${ROOT}/ioapi-3.1/${BIN} -lioapi -fopenmp $(nf-config --flibs)"
 FC=$FC FFLAGS=$FFLAGS LIBS=$LIBS make
 
 [[ -f mcip.exe ]] || { echo "MCIP failed to build"; exit 1; }
+popd
+
+# Check that BCON and ICON were built
+
+ls bcon/BLD_CH4only
+ls icon/BLD_CH4only
+[[ -f bcon/BLD_CH4only/BCON_CH4only_Linux2_x86_64gfortran_profile_CH4only ]] || { echo "BCON failed to build"; exit 1; }
+[[ -f icon/BLD_CH4only/ICON_CH4only_Linux2_x86_64gfortran_profile_CH4only ]] || { echo "ICON failed to build"; exit 1; }
