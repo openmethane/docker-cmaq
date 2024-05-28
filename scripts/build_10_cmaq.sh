@@ -32,12 +32,19 @@ popd
 
 
 # Loop over the other models to be built
-for item in pario icon bcon cctm; do
+for item in pario icon cctm; do
   pushd $item
   echo "Building $item"
   ./bldit.$item
   popd
 done
+
+pushd bcon
+  echo "Building bcon"
+  # Build in the profile and m3conc modes
+  MODTYPE=m3conc ./bldit.bcon
+  MODTYPE=profile ./bldit.bcon
+popd
 
 pushd mcip/src
 
@@ -60,6 +67,7 @@ BUILD_DIR=BLD_CH4only
 ls bcon/$BUILD_DIR
 ls icon/$BUILD_DIR
 ls cctm/$BUILD_DIR
+[[ -f bcon/$BUILD_DIR/BCON_CH4only_${BIN}_profile_CH4only ]] || { echo "BCON failed to build"; exit 1; }
 [[ -f bcon/$BUILD_DIR/BCON_CH4only_${BIN}_m3conc_CH4only ]] || { echo "BCON failed to build"; exit 1; }
 [[ -f icon/$BUILD_DIR/ICON_CH4only_${BIN}_profile_CH4only ]] || { echo "ICON failed to build"; exit 1; }
 [[ -f cctm/$BUILD_DIR/CCTM_CH4only_${BIN} ]] || { echo "CCTM failed to build"; exit 1; }
