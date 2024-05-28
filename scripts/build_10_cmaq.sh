@@ -9,7 +9,7 @@ source $PWD/scripts/common.sh
 # Setup the build environment for iotools
 ARCH=$(uname -i)
 export ARCH
-export BIN=Linux2_${ARCH}gfort
+export BIN=Linux2_${ARCH}gcc
 export BASEDIR=$PWD
 export CPLMODE=nocpl
 
@@ -67,6 +67,6 @@ BUILD_DIR=BLD_CH4only
 ls bcon/$BUILD_DIR
 ls icon/$BUILD_DIR
 ls cctm/$BUILD_DIR
-[[ -f bcon/$BUILD_DIR/BCON_CH4only_${EXEC_ID}_m3conc_CH4only ]] || { echo "BCON failed to build"; exit 1; }
-[[ -f icon/$BUILD_DIR/ICON_CH4only_${EXEC_ID}_profile_CH4only ]] || { echo "ICON failed to build"; exit 1; }
-[[ -f cctm/$BUILD_DIR/CCTM_CH4only_${EXEC_ID} ]] || { echo "CCTM failed to build"; exit 1; }
+[[ -f bcon/$BUILD_DIR/BCON_CH4only_${BIN}_m3conc_CH4only ]] || { echo "BCON failed to build"; exit 1; }
+[[ -f icon/$BUILD_DIR/ICON_CH4only_${BIN}_profile_CH4only ]] || { echo "ICON failed to build"; exit 1; }
+[[ -f cctm/$BUILD_DIR/CCTM_CH4only_${BIN} ]] || { echo "CCTM failed to build"; exit 1; }
