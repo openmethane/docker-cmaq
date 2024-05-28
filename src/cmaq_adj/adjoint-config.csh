@@ -12,7 +12,7 @@ setenv IOAPI_HOME /opt/cmaq/ioapi-3.1
 
 #> architecture & compiler specific settings
 
-setenv system "`/bin/uname -i`"
+setenv system "`/bin/uname -m`"
 setenv BLD_OS "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
 
 # CHANGE: set M3LIB to base directory for MPI, netCDF, IOAPI, STENEX, PARIO libraries

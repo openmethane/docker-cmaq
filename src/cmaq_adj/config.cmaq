@@ -27,7 +27,7 @@
 
 #> architecture & compiler specific settings
 #-------------------------------------------------------------------------------
- setenv system "`/bin/uname -i`"
+ setenv system "`/bin/uname -m`"
  setenv bld_os "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
 
 # CHANGE: Set appropriate library directory
