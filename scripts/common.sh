@@ -2,8 +2,10 @@
 
 # Setup the build environment for iotools
 ARCH=$(uname -i)
+BLD_OS=$(/bin/uname -s)$(/bin/uname -r | cut -d. -f1)
 export ARCH
-export BIN=Linux2_${ARCH}gfort
+export BLD_OS
+export BIN=${BLD_OS}_${ARCH}gfort
 export BASEDIR=$PWD
 export CPLMODE=nocpl
 export LD_LIBRARY_PATH="/opt/wrf/libs/lib:${LD_LIBRARY_PATH}"

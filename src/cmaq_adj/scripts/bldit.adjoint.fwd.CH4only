@@ -24,13 +24,6 @@ source ../adjoint-config.csh
  echo "   Model archive path: $M3MODEL"
  echo "         library path: $M3LIB"
 
- ## set $BLD_OS = `uname -s``uname -r | cut -d. -f1`  ## Script set up for Linux
- setenv BLD_OS Linux2
- if ($BLD_OS != 'Linux2') then
-    echo "   $BLD_OS -> wrong makit script for host!"
-    exit 1
-    endif
- set echo
 
 #:#:#:#:#:#:#:#:#:#:#:# Begin User Input Section #:#:#:#:#:#:#:#:#:#:#:#
 

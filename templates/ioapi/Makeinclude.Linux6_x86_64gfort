@@ -37,4 +37,4 @@ PARFLAGS  =
 ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc `nf-config --flibs`
 
 M4DEFFILE = $(PVM_ROOT)/conf/$(PVM_ARCH).m4
-PVMLIBS   = -lpvm3
+# PVMLIBS   = -lpvm3
