@@ -23,13 +23,6 @@ RUN conda-pack -n cmaq -o /tmp/env.tar && \
 # so now fix up paths:
 RUN /opt/venv/bin/conda-unpack
 
-
-FROM debian:bookworm AS build
-
-WORKDIR /opt/cmaq
-
-COPY --from=conda /opt/venv /opt/venv
-
 COPY templates/ioapi /opt/cmaq/templates/ioapi
 COPY scripts/common.sh /opt/cmaq/scripts/common.sh
 COPY scripts/build_00_ioapi.sh /opt/cmaq/scripts/build_00_ioapi.sh
@@ -56,7 +49,7 @@ ENV TZ=Etc/UTC
 ENV CMAQ_VERSION="5.0.2"
 
 WORKDIR /opt/cmaq
-COPY --from=conda /opt/venv /opt/venv
+COPY --from=build /opt/venv /opt/venv
 COPY --from=build /opt/cmaq /opt/cmaq
 
 ENTRYPOINT ["/bin/bash"]
