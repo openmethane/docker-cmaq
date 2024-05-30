@@ -18,16 +18,16 @@
  set echo
 
 #> model repository location
- setenv M3HOME  /home/563/spt563/cmaq/cmaq_adj
+ setenv M3HOME  /opt/cmaq/cmaq_adj
  setenv M3MODEL $M3HOME/CCTM
 # setenv M3DATA  /home/slc/bnmk/CMAQv5.0.1/data
- setenv COMPILER intel
+ setenv COMPILER gcc
 
 #===============================================================================
 
 #> architecture & compiler specific settings
 #-------------------------------------------------------------------------------
- setenv system "`/bin/uname -i`"
+ setenv system "`/bin/uname -m`"
  setenv bld_os "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
 
 # CHANGE: Set appropriate library directory
@@ -85,16 +85,16 @@
 #< module load gcc-4.6 openmpi-1.4.3_gcc46
        setenv compiler gcc
        setenv compiler_ext gfort
-       setenv myFC /usr/local/gcc-4.6/bin/gfortran
+       setenv myFC gfortran
        setenv myCC gcc
        setenv myLINK_FLAG ""
-       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32"
-       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32"
-       setenv myCFLAGS "-O2"
+       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
+       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
+       setenv myCFLAGS "-O2 -march=native -mtune=native"
        setenv mpi "-lmpich"
        setenv extra_lib
 ######## vvvvv infinity
-#      setenv extra_lib "$extra_lib -lgomp"
+        setenv extra_lib "$extra_lib -fopenmp"
        breaksw
 
     default:
@@ -108,9 +108,8 @@
 
 #> generate library locations
        setenv M3LIB ${lib_basedir}/${system}/${compiler}
-       setenv MPI_INC $M3LIB/mpich/include
-       setenv MPI_INC 
+       setenv MPI_INC /usr/lib/${ARCH}-linux-gnu/openmpi/include
 
 #> set executable id
- setenv EXEC_ID ${bld_os}_${system}${compiler}
+ setenv EXEC_ID ${bld_os}_${system}${compiler_ext}
  unset echo

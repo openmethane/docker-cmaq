@@ -30,6 +30,16 @@ jobs:
       CMAQ_VERSION: 5.0.2
 
     steps:
+      # Clone and update submodules
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Add SSH private keys for submodule repositories
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.CMAQ_DEPLOY_KEY }}
+      - name: Clone submodules
+        run: git submodule update --init --recursive --remote
+      # Build docker image
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
@@ -58,9 +68,12 @@ jobs:
         uses: docker/build-push-action@v5
         id: build
         with:
+          context: .
           build-args: |
             CMAQ_VERSION=${{ env.CMAQ_VERSION }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: true

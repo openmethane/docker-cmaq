@@ -1,4 +1,4 @@
-# Version "$Id: Makeinclude.Linux2_x86_64gfort 1 2017-06-10 18:05:20Z coats $"
+# Version "$Id: Makeinclude.Linux2_x86_64gfort 1 2014-03-14 20:22:54Z coats $"
 #
 #  12/2013 by CJC: Conditional preprocessor-code "-DNEED_ARGS=1"
 #  to implement  IARGC() and GETARG() for compilers
@@ -8,19 +8,11 @@
 #  Remove "-DNEED_ARGS=1" from ARCHFLAGS for version 4.7.x and earlier
 #
 # Use "-march=native -mtune=native" if compile-platform and compute-platform
-# are the same, for processor specific instruction-set and optimization.
+# are the same.
 # Use "-Wall -Wsurprising" for full diagnostics.
-#
-#  08/2020 by CJC: gfortran version 10 requires Fortran-flag
-#
-#        -fallow-argument-mismatch
-#
-#  to deal with its idiosyncratic interpretation of the Fortran-2018 Standard.
-#  See the "Makeinclude.Linux2_x86_64gfort10*" files for how to do this...
 
 AR   = ar
 CC   = gcc
-CXX  = g++
 FC   = gfortran
 M4   = m4
 LINK = $(CC)
@@ -33,8 +25,8 @@ MFLAGS    = -ffast-math -funroll-loops -march=native -mtune=native #  -Wall -Wsu
 
 OMPFLAGS  = -fopenmp
 OMPLIBS   = -fopenmp
-COPTFLAGS = -O3 ${MFLAGS}
-FOPTFLAGS = -O3 ${MFLAGS}
+COPTFLAGS = -g -O3 ${MFLAGS}
+FOPTFLAGS = -g -O3 ${MFLAGS}
 FPPFLAGS  = -DF90=1
 FSFLAGS   = -fno-automatic
 ARCHFLAGS = \
@@ -44,10 +36,7 @@ ARCHFLAGS = \
  -DIOAPI_NO_STDOUT=1 \
  -DNEED_ARGS=1
 PARFLAGS  =
-ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc
-
-M4DEFFILE = 
-PVMLIBS   = 
+ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc `nf-config --flibs`
 
 # M4DEFFILE = $(PVM_ROOT)/conf/$(PVM_ARCH).m4
 # PVMLIBS   = -lpvm3

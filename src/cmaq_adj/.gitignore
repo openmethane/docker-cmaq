@@ -10,3 +10,8 @@
 
 # Ignore work/
 work
+
+# Binaries
+bldmake
+ADJOINT_FWD
+ADJOINT_BWD

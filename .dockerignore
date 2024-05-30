@@ -1,9 +1,3 @@
-.idea
-keys
-logs
-secrets*
-.env
-
 # Previous build artifacts
 *.o
 *.mod
@@ -12,5 +6,3 @@ secrets*
 bldmake
 ADJOINT_BWD
 ADJOINT_FWD
-
-CMAQ-5.0.2*
