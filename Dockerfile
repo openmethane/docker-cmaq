@@ -31,6 +31,7 @@ COPY scripts/build_00_ioapi.sh /opt/cmaq/scripts/build_00_ioapi.sh
 RUN bash /opt/cmaq/scripts/build_00_ioapi.sh
 
 # Build common CMAQ dependencies
+COPY templates/cmaq /opt/cmaq/templates/cmaq
 COPY src/CMAQv5.0.2_notpollen /opt/cmaq/CMAQv5.0.2_notpollen
 COPY scripts/build_10_cmaq.sh /opt/cmaq/scripts/build_10_cmaq.sh
 RUN bash /opt/cmaq/scripts/build_10_cmaq.sh
