@@ -17,6 +17,8 @@ mkdir -p /opt/cmaq/${cmaq_dirname}/lib/${ARCH}/gcc/
 ln -s /opt/cmaq/ioapi-3.1 /opt/cmaq/${cmaq_dirname}/lib/ioapi-3.1
 
 pushd scripts
+# Copy in config
+cp /opt/cmaq/templates/cmaq/config.cmaq config.cmaq
 
 #  Build the builder first
 pushd build

@@ -1,7 +1,7 @@
 #! /bin/csh -f
 
-# ================= CMAQ5.0.1 Configuration Script ================== #
-# Requirements: I/O API & netCDF libs, Git, PGI, Intel, Gnu Compiler  #
+# ================= CMAQ5.0.2 Configuration Script ================== #
+# Requirements: I/O API & netCDF libs, PGI, Intel, Gnu Compiler       #
 #               Collection (GCC), MPICH for multiprocessor computing  #
 # Note that this script is configured/tested for Red Hat Linux O/S    #
 #                                                                     #
@@ -11,90 +11,75 @@
 
 #> config.cmaq
 #> sourced from bldit.<model>
-#> env var $COMPILER set in bldit
-
-#> To accomdate Carlie's ioapi naming convention, which does not follow
-#> the compiler directory name, the env var "compiler_ext" must be set.
- set echo
 
 #> model repository location
- setenv M3HOME  /opt/cmaq/cmaq_adj
- setenv M3MODEL $M3HOME/CCTM
-# setenv M3DATA  /home/slc/bnmk/CMAQv5.0.1/data
- setenv COMPILER gcc
-
+ setenv M3HOME /opt/cmaq/CMAQv5.0.2_notpollen
+ setenv M3MODEL ${M3HOME}/models
+ setenv M3DATA  ${M3HOME}/data
 #===============================================================================
 
 #> architecture & compiler specific settings
 #-------------------------------------------------------------------------------
+
+#> set the COMPILER
+#   setenv COMPILER intel
+# setenv COMPILER pgi
+setenv COMPILER gcc
+
  setenv system "`/bin/uname -m`"
  setenv bld_os "`/bin/uname -s``/bin/uname -r | cut -d. -f1`"
-
-# CHANGE: Set appropriate library directory
  setenv lib_basedir $M3HOME/lib
-#setenv lib_basedir /home/563/spt563/CMAQ_test/CMAQ/lib
-######## vvvvv infinity
+
+######## set these extra library paths only if needed for your architecture
+#setenv extra_lib "-openmp"
 #setenv extra_lib "-lrdmacm -libumad -lopa -lmpl -lrt -lpthread -libverbs -ldl"
 #setenv extra_lib "-lrdmacm -libumad "
+setenv extra_lib
 
+####### MPI libraries ########
+#use -lmpich for mvpich and -lmpi for openmpi
+# setenv mpi "-lmpich"
+setenv mpi "-lmpi"
 
-# CHANGE: Set appropriate links to compiler selected above
-
-#> for terra:
  switch ( $COMPILER )
     case intel:
 ##> Intel fortran compiler......................................................
-#< module load intel-11.1 impi_3.2.2.006
        setenv compiler intel
        setenv compiler_ext ifort
-       setenv myFC ifort
        setenv myFC mpif90
-######## vvvvv infinity
-#    setenv myFC /share/linux86_64/intel/fc/11.1.059/bin/intel64/ifort
-       setenv myCC icc
        setenv myCC mpicc
-######## vvvvv infinity
-#    setenv myCC /share/linux86_64/intel/cc/11.1.059/bin/intel64/icc
-       setenv myLINK_FLAG ""
+       setenv myLINK_FLAG "-i-static"
        setenv myFFLAGS "-fixed -132 -O3 -override-limits -fno-alias -mp1 -fp-model precise"
        setenv myFRFLAGS "-free -O3 -fno-alias -mp1 -fp-model precise"
        setenv myCFLAGS "-O2"
-       setenv mpi "-lmpi"
-       setenv mpi ""
-       setenv extra_lib ""
+       setenv extra_lib $extra_lib
        breaksw
 
     case pgi:
 ##> Portland Group fortran compiler.............................................
-#< module load pgi-11.9 openmpi_pgi
        setenv compiler pgi
        setenv compiler_ext pg
-       setenv LM_LICENSE_FILE /usr/local/pgi/license.dat
-       setenv myFC /usr/local/pgi-11.9/linux86-64/11.9/bin/pgf90
-       setenv myCC /usr/local/pgi-11.9/linux86-64/11.9/bin/pgcc
+       setenv myFC mpif90
+       setenv myCC mpicc
        setenv myLINK_FLAG ""
        setenv myFFLAGS "-Mfixed -Mextend -O3"
        setenv myFRFLAGS "-Mfree -O3"
        setenv myCFLAGS "-O2"
-       setenv mpi "-lmpi"
-       setenv extra_lib "-lmpi_f77 "
+       setenv extra_lib $extra_lib
        breaksw
 
     case gcc:
 ##> gfortran compiler......................................................
-#< module load gcc-4.6 openmpi-1.4.3_gcc46
        setenv compiler gcc
        setenv compiler_ext gfort
-       setenv myFC gfortran
+       setenv myFC mpif90 #gfortran
        setenv myCC gcc
        setenv myLINK_FLAG ""
-       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
-       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32 -march=native -mtune=native"
-       setenv myCFLAGS "-O2 -march=native -mtune=native"
-       setenv mpi "-lmpich"
+       setenv myFFLAGS "-ffixed-form -ffixed-line-length-132 -O3 -funroll-loops -finit-character=32 -fallow-argument-mismatch"
+       setenv myFRFLAGS "-ffree-form -ffree-line-length-none -O3 -funroll-loops -finit-character=32 -fallow-argument-mismatch"
+       setenv myCFLAGS "-O2"
        setenv extra_lib
-######## vvvvv infinity
-        setenv extra_lib "$extra_lib -fopenmp"
+       setenv extra_lib "$extra_lib -fopenmp"
        breaksw
 
     default:
@@ -103,12 +88,13 @@
        breaksw
 
  endsw
- 
+
 #===============================================================================
 
 #> generate library locations
        setenv M3LIB ${lib_basedir}/${system}/${compiler}
-       setenv MPI_INC /usr/lib/${ARCH}-linux-gnu/openmpi/include
+       if ( ! -d $M3LIB ) mkdir -p $M3LIB
+       setenv MPI_INC /usr/lib/${system}-linux-gnu/openmpi/include
 
 #> set executable id
  setenv EXEC_ID ${bld_os}_${system}${compiler_ext}
