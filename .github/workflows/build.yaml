@@ -63,7 +63,7 @@ jobs:
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-            type=raw,value=${{ env.CMAQ_VERSION }}
+            type=raw,value=${{ env.CMAQ_VERSION }},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
       - name: Build and push image
         uses: docker/build-push-action@v5
         id: build
