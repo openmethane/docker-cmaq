@@ -20,12 +20,16 @@ FROM debian:bookworm as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV CMAQ_VERSION="5.0.2"
+ENV PATH=/opt/venv/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/venv/bin:$LD_LIBRARY_PATH
 
 RUN apt-get update && \
     apt-get install -y build-essential m4 csh wget && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/cmaq
+
+COPY --from=conda /opt/venv /opt/venv
 
 # Build ioapi
 COPY templates/ioapi /opt/cmaq/templates/ioapi
@@ -51,6 +55,8 @@ MAINTAINER Jared Lewis <jared.lewis@climate-resource.com>
 
 ENV TZ=Etc/UTC
 ENV CMAQ_VERSION="5.0.2"
+ENV PATH=/opt/venv/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/venv/bin:$LD_LIBRARY_PATH
 
 WORKDIR /opt/cmaq
 COPY --from=conda /opt/venv /opt/venv
