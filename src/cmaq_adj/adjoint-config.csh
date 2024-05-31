@@ -27,7 +27,7 @@ setenv CC mpicc
 setenv FP $FC
 
 # CHANGE: Set location of MPICH if using multiple processors
-setenv MPICH  "/opt/env"
+setenv MPICH  "/opt/venv"
 
 # CHANGE: Set location for stenex library/include/and mod files
 # setenv STENEX   $M3LIB/se_noop
