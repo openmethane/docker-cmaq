@@ -43,7 +43,7 @@ setenv LINK_FLAGS "-fopenmp"
 setenv IOAPI_FLAGS  "-L${IOAPI_HOME}/${BLD_OS}_${system}${compiler_ext} -lioapi"
 setenv NETCDF_FLAGS  "`nf-config --flibs`"
 setenv PARIO_FLAGS "-L${M3LIB}/pario -lpario"
-setenv MPICH_FLAGS "-L${MPICH}/lib -lmpi -lmpi_mpifh"
+setenv MPICH_FLAGS "-L${MPICH}/lib -lmpich"
 
 # Set location of M3Bld executable
 setenv Blder  "$M3MODEL/BLDMAKE_git/bldmake -verbose"

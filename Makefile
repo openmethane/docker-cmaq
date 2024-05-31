@@ -7,7 +7,7 @@ build-aarch64: Dockerfile  ## build an arm version of the docker container
 	docker build --platform=linux/arm64 . -t cmaq
 
 .phony: build-conda
-build-aarch64: Dockerfile  ## build just the "conda" step of the docker container
+build-conda: Dockerfile  ## build just the "conda" step of the docker container
 	docker build --platform=linux/arm64 . --target conda -t cmaq-conda
 
 .phony: run
@@ -16,5 +16,5 @@ run: build  ## run the docker container
 
 
 .phony: run-conda
-run-conda: build  ## run a container with only the conda dependencies
+run-conda: build-conda  ## run a container with only the conda dependencies
 	docker run -it --rm -v ${PWD}:/opt/project cmaq-conda
