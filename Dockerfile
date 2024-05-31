@@ -25,12 +25,15 @@ RUN apt-get update && \
     apt-get install -y build-essential m4 csh wget && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /opt/cmaq
+
+# Build ioapi
 COPY templates/ioapi /opt/cmaq/templates/ioapi
 COPY scripts/common.sh /opt/cmaq/scripts/common.sh
 COPY scripts/build_00_ioapi.sh /opt/cmaq/scripts/build_00_ioapi.sh
 RUN bash /opt/cmaq/scripts/build_00_ioapi.sh
 
-# Build common CMAQ dependencies
+# Build a modified version of CMAQ in ch4 only mode
 COPY templates/cmaq /opt/cmaq/templates/cmaq
 COPY src/CMAQv5.0.2_notpollen /opt/cmaq/CMAQv5.0.2_notpollen
 COPY scripts/build_10_cmaq.sh /opt/cmaq/scripts/build_10_cmaq.sh
