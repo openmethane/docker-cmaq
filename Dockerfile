@@ -1,12 +1,5 @@
 FROM continuumio/miniconda3 as conda
 
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC
-
-RUN apt-get update && \
-    apt-get install -y build-essential m4 csh wget && \
-    rm -rf /var/lib/apt/lists/*
-
 COPY environment.yml /opt/environment.yml
 RUN conda env create -f /opt/environment.yml
 
@@ -22,6 +15,15 @@ RUN conda-pack -n cmaq -o /tmp/env.tar && \
 # We've put venv in same path it'll be in final image,
 # so now fix up paths:
 RUN /opt/venv/bin/conda-unpack
+
+FROM debian:bookworm as build
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV CMAQ_VERSION="5.0.2"
+
+RUN apt-get update && \
+    apt-get install -y build-essential m4 csh wget && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY templates/ioapi /opt/cmaq/templates/ioapi
 COPY scripts/common.sh /opt/cmaq/scripts/common.sh
@@ -44,12 +46,11 @@ FROM debian:bookworm AS runtime
 
 MAINTAINER Jared Lewis <jared.lewis@climate-resource.com>
 
-
 ENV TZ=Etc/UTC
 ENV CMAQ_VERSION="5.0.2"
 
 WORKDIR /opt/cmaq
-COPY --from=build /opt/venv /opt/venv
+COPY --from=conda /opt/venv /opt/venv
 COPY --from=build /opt/cmaq /opt/cmaq
 
 ENTRYPOINT ["/bin/bash"]
