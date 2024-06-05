@@ -1,1 +1,0 @@
-/opt/cmaq/cmaq_adj/BLD_bwd_CH4only/Makefile.gcc
