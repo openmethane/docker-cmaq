@@ -543,7 +543,7 @@ C    Retrieve the perturbation information
             XMSG = 'Environment variable improperly formatted'
             CALL M3EXIT(PNAME, JDATE, JTIME, XMSG, XSTAT2)
          END IF
-          write(*,*) 'perturbations, col,row,lev,spec,delt: ',PERTI,PERTJ,PERTL,PERTV,PERTD
+          write(*,*) 'perturbations, col,row,lev,spec,delt,flag: ',PERTI,PERTJ,PERTL,PERTV,PERTD,PERTFLAG
 
       END IF          !  if Firstime
 
