@@ -27,7 +27,7 @@ setenv CC mpicc
 setenv FP $FC
 
 # CHANGE: Set location of MPICH if using multiple processors
-setenv MPICH  "/usr/lib/${ARCH}-linux-gnu/openmpi"
+setenv MPICH  "/opt/venv"
 
 # CHANGE: Set location for stenex library/include/and mod files
 # setenv STENEX   $M3LIB/se_noop
@@ -35,7 +35,8 @@ setenv STENEX  ${M3LIB}/se_snl
 
 # CHANGE: Set compiler flags
 # These have been tested with gfortran9
-setenv F_FLAGS "-ffixed-line-length-none -fd-lines-as-comments -dI -cpp -I. -march=native -mtune=native -g -O2"
+# -march=native -mtune=native
+setenv F_FLAGS "-ffixed-line-length-none -fd-lines-as-comments -fallow-argument-mismatch -dI -cpp -I. -g -O2"
 setenv CPP_FLAGS ""
 setenv C_FLAGS    "-g -DFLDMN -I${MPICH}/include"
 setenv LINK_FLAGS "-fopenmp"
@@ -43,7 +44,7 @@ setenv LINK_FLAGS "-fopenmp"
 setenv IOAPI_FLAGS  "-L${IOAPI_HOME}/${BLD_OS}_${system}${compiler_ext} -lioapi"
 setenv NETCDF_FLAGS  "`nf-config --flibs`"
 setenv PARIO_FLAGS "-L${M3LIB}/pario -lpario"
-setenv MPICH_FLAGS "-L${MPICH}/lib -lmpi -lmpi_mpifh"
+setenv MPICH_FLAGS "-L${MPICH}/lib -lmpich"
 
 # Set location of M3Bld executable
 setenv Blder  "$M3MODEL/BLDMAKE_git/bldmake -verbose"

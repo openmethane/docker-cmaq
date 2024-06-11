@@ -21,7 +21,7 @@ LINK = $(CC)
 MODI = -I
 E132 = -ffixed-line-length-132
 
-MFLAGS    = -ffast-math -funroll-loops -march=native -mtune=native #  -Wall -Wsurprising
+MFLAGS    = -ffast-math -funroll-loops -march=native -mtune=native -fallow-argument-mismatch #  -Wall -Wsurprising
 
 OMPFLAGS  = -fopenmp
 OMPLIBS   = -fopenmp
