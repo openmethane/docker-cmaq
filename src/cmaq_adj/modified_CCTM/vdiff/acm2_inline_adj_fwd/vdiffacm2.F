@@ -571,12 +571,14 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 
          CALL GET_EMIS ( MDATE, MTIME, TSTEP, CONVPA, RDX3F, RRHOJ, RJACM )
 
-        ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF )
-     &                 , STAT = ALLOCSTAT )
-            IF ( ALLOCSTAT .NE. 0 ) THEN
-               XMSG = 'PERT  memory allocation failed'
-               CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
-            END IF
+        ! Allocate PERT Array
+        ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF ), STAT = ALLOCSTAT )
+        IF ( ALLOCSTAT .NE. 0 ) THEN
+           XMSG = 'PERT  memory allocation failed'
+           CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
+        END IF
+
+        write(*,*) 'perturbations, col,row,lev,spec,delt,flag: ',PERTI,PERTJ,PERTL,PERTV,PERTD,PERTFLAG
       IF (PERTFLAG > 0) THEN
 !! *** perturb emis if validating emissions sensitivities
 !!     Technique implemented by mdt, refined by slc (8.2014)
@@ -589,7 +591,6 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 
 !
 !         IF ( JDATE == 2007161 .AND.  JTIME <= 5500 ) THEN
-!            ! Allocate PERT Array
 !            ! Always include the PERT = 1.0 (sf test) or 0.0 (abs test) to ensure that all emissions
 !            ! other than that perturbed are constant.
             PERT( :,:,:,: ) = 1.d0  ! fractional
@@ -654,6 +655,7 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 !            ! Always include the PERT = 1.0 (fractional) or 0.0 (absolute)  to ensure that all emissions
 !            ! other than those perturbed are constant.
 !            PERT( :,:,:,: ) = 0.d0 ! absolute
+            WRITE(LOGDEV,*) 'Static fractional perturbation'
             PERT( :,:,:,: ) = 1.d0 ! fractional
             EM_SF = 1.0            ! always
 !         END IF ! Date and time qualification
