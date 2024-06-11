@@ -449,11 +449,11 @@ C Create new adjoint file and open for update
 
 C    Retrieve the perturbation information
 
-         !write(*,*) 'before reading perturbation parameters'
+          write(*,*) 'before reading perturbation parameters'
          CALL GET_ENVLIST ( PERTCOLS, NV, V_LIST )
-         !write(*,*) 'PERTCOLS: ',PERTCOLS
-         !write(*,*) 'NV: ',NV
-         !write(*,*) 'V_LIST: ',V_LIST
+          write(*,*) 'PERTCOLS: ',PERTCOLS
+          write(*,*) 'NV: ',NV
+          write(*,*) 'V_LIST: ',V_LIST
          IF ( NV .LT. 1 ) THEN
             PERTFLAG = 0
             XMSG = 'Not applying a perturbation'
@@ -543,7 +543,7 @@ C    Retrieve the perturbation information
             XMSG = 'Environment variable improperly formatted'
             CALL M3EXIT(PNAME, JDATE, JTIME, XMSG, XSTAT2)
          END IF
-         !write(*,*) 'perturbations, col,row,lev,spec,delt: ',PERTI,PERTJ,PERTL,PERTV,PERTD
+          write(*,*) 'perturbations, col,row,lev,spec,delt: ',PERTI,PERTJ,PERTL,PERTV,PERTD
 
       END IF          !  if Firstime
 
@@ -571,6 +571,12 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 
          CALL GET_EMIS ( MDATE, MTIME, TSTEP, CONVPA, RDX3F, RRHOJ, RJACM )
 
+        ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF )
+     &                 , STAT = ALLOCSTAT )
+            IF ( ALLOCSTAT .NE. 0 ) THEN
+               XMSG = 'PERT  memory allocation failed'
+               CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
+            END IF
       IF (PERTFLAG > 0) THEN
 !! *** perturb emis if validating emissions sensitivities
 !!     Technique implemented by mdt, refined by slc (8.2014)
@@ -580,12 +586,7 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 !!      IF ( TRIM( RUN_TYPE ) == 'emis_fd' ) THEN
 !!        Limit perturbation to first four hours of benchmark
 !!        (6.2014.slc)
-            ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF )
-     &                 , STAT = ALLOCSTAT )
-            IF ( ALLOCSTAT .NE. 0 ) THEN
-               XMSG = 'PERT  memory allocation failed'
-               CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
-            END IF
+
 !
 !         IF ( JDATE == 2007161 .AND.  JTIME <= 5500 ) THEN
 !            ! Allocate PERT Array
