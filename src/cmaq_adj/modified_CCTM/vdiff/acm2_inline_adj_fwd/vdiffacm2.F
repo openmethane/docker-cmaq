@@ -82,7 +82,6 @@ C-----------------------------------------------------------------------
 C Arguments:
 
       REAL, POINTER :: CGRID( :,:,:,: )              !  concentrations
-      REAL, ALLOCATABLE :: PERT (:, :, :, :) ! emis perturbation
       INTEGER      JDATE        ! current model date, coded YYYYDDD
       INTEGER      JTIME        ! current model time, coded HHMMSS
       INTEGER      TSTEP( 2 )   ! time step vector (HHMMSS)
@@ -132,6 +131,8 @@ C Local Variables:
       INTEGER, SAVE :: WSTEP  = 0               ! local write counter
       INTEGER, SAVE :: JTIME_SAVE
       INTEGER  STATUS                           ! ENV... status
+
+      REAL, ALLOCATABLE, SAVE :: PERT (:, :, :, :) ! emis perturbation
 
       REAL          DX1, DX2                    ! CX x1- and x2-cell widths
       REAL, ALLOCATABLE, SAVE :: DX3F ( : )
@@ -285,6 +286,8 @@ C ACM Local Variables
       END INTERFACE
 
 C-----------------------------------------------------------------------
+      ! Initialise the flag for handling perturbations
+      PERTFLAG = 0
 
       IF ( FIRSTIME ) THEN
 
@@ -447,13 +450,22 @@ C set auxiliary depv arrays
 C Create new adjoint file and open for update
          CALL CHK_FILE_OPEN ( ADJ_VDIFF_CHK, JDATE, JTIME, .TRUE., TSTEP )
 
+        ! Allocate PERT Array
+        ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF ), STAT = ALLOCSTAT )
+        IF ( ALLOCSTAT .NE. 0 ) THEN
+           XMSG = 'PERT  memory allocation failed'
+           CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
+        END IF
+
 C    Retrieve the perturbation information
 
-         !write(*,*) 'before reading perturbation parameters'
+
+
+          write(*,*) 'before reading perturbation parameters'
          CALL GET_ENVLIST ( PERTCOLS, NV, V_LIST )
-         !write(*,*) 'PERTCOLS: ',PERTCOLS
-         !write(*,*) 'NV: ',NV
-         !write(*,*) 'V_LIST: ',V_LIST
+          write(*,*) 'PERTCOLS: ',PERTCOLS
+          write(*,*) 'NV: ',NV
+          write(*,*) 'V_LIST: ',V_LIST
          IF ( NV .LT. 1 ) THEN
             PERTFLAG = 0
             XMSG = 'Not applying a perturbation'
@@ -543,7 +555,7 @@ C    Retrieve the perturbation information
             XMSG = 'Environment variable improperly formatted'
             CALL M3EXIT(PNAME, JDATE, JTIME, XMSG, XSTAT2)
          END IF
-         !write(*,*) 'perturbations, col,row,lev,spec,delt: ',PERTI,PERTJ,PERTL,PERTV,PERTD
+          write(*,*) 'perturbations, col,row,lev,spec,delt,flag: ',PERTI,PERTJ,PERTL,PERTV,PERTD,PERTFLAG
 
       END IF          !  if Firstime
 
@@ -571,6 +583,7 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 
          CALL GET_EMIS ( MDATE, MTIME, TSTEP, CONVPA, RDX3F, RRHOJ, RJACM )
 
+        write(*,*) 'perturbations, col,row,lev,spec,delt,flag: ',PERTI,PERTJ,PERTL,PERTV,PERTD,PERTFLAG
       IF (PERTFLAG > 0) THEN
 !! *** perturb emis if validating emissions sensitivities
 !!     Technique implemented by mdt, refined by slc (8.2014)
@@ -580,15 +593,9 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 !!      IF ( TRIM( RUN_TYPE ) == 'emis_fd' ) THEN
 !!        Limit perturbation to first four hours of benchmark
 !!        (6.2014.slc)
-            ALLOCATE ( PERT ( MY_NCOLS, MY_NROWS, EMLAYS, N_SPC_DIFF )
-     &                 , STAT = ALLOCSTAT )
-            IF ( ALLOCSTAT .NE. 0 ) THEN
-               XMSG = 'PERT  memory allocation failed'
-               CALL M3EXIT ( PNAME, JDATE, JTIME, XMSG, XSTAT1 )
-            END IF
+
 !
 !         IF ( JDATE == 2007161 .AND.  JTIME <= 5500 ) THEN
-!            ! Allocate PERT Array
 !            ! Always include the PERT = 1.0 (sf test) or 0.0 (abs test) to ensure that all emissions
 !            ! other than that perturbed are constant.
             PERT( :,:,:,: ) = 1.d0  ! fractional
@@ -653,6 +660,7 @@ C read & interpolate emissions data => VDEMIS from EMIS_DEFN module
 !            ! Always include the PERT = 1.0 (fractional) or 0.0 (absolute)  to ensure that all emissions
 !            ! other than those perturbed are constant.
 !            PERT( :,:,:,: ) = 0.d0 ! absolute
+            WRITE(LOGDEV,*) 'Static fractional perturbation'
             PERT( :,:,:,: ) = 1.d0 ! fractional
             EM_SF = 1.0            ! always
 !         END IF ! Date and time qualification
