@@ -23,8 +23,8 @@ MFLAGS    = -ffast-math -funroll-loops -m64 -fallow-argument-mismatch # -march=n
 
 OMPFLAGS  = -fopenmp
 OMPLIBS   = -fopenmp
-COPTFLAGS = -g -O3 ${MFLAGS}
-FOPTFLAGS = -g -O3 ${MFLAGS}
+COPTFLAGS = -g -O2 -fbacktrace ${MFLAGS}
+FOPTFLAGS = -g -O2 -fbacktrace ${MFLAGS}
 FPPFLAGS  = -DF90=1
 FSFLAGS   = -fno-automatic
 ARCHFLAGS = \
