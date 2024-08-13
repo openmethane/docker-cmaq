@@ -93,9 +93,10 @@ jobs:
     # Temporary workaround until we can get everything passing
     continue-on-error: true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Fetch the test data and then run pytest
         run: |
-          cd /opt/project
           make tests/test-data/mcip
           pytest -r a -v tests/unit
           
