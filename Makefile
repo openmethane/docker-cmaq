@@ -20,7 +20,7 @@ run-conda: build-conda  ## run a container with only the conda dependencies
 
 
 tests/test-data/mcip:  # The required MCIP output is too large to store in the repository so fetch it from a S3 bucket
-	wget -c https://prior.openmethane.org/cmaq/tests/test-data/mcip.tar.gz -O tests/test-data/mcip.tar.gz
+	wget -c --no-progress https://prior.openmethane.org/cmaq/tests/test-data/mcip.tar.gz -O tests/test-data/mcip.tar.gz
 	# Extracts to tests/test-data/mcip
 	tar -xf tests/test-data/mcip.tar.gz
 

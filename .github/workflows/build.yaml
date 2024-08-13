@@ -100,5 +100,5 @@ jobs:
           apt update
           apt install -y wget make
           make tests/test-data/mcip
-          pytest -r a -v tests/unit
+          pytest -r a -v tests
           
