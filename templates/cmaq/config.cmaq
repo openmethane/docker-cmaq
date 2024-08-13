@@ -38,8 +38,8 @@ setenv extra_lib
 
 ####### MPI libraries ########
 #use -lmpich for mvpich and -lmpi for openmpi
- setenv mpi "-lmpich"
-# setenv mpi "-lmpi"
+ # setenv mpi "-lmpich"
+ setenv mpi "-lmpi -lmpi_mpifh"
 
  switch ( $COMPILER )
     case intel:

@@ -5,7 +5,8 @@ channels:
 dependencies:
   - hdf5=1.14.3
   - jasper=1.900.1
-  - mpich=4.2.1
+  - openmpi=4.0.2
+  - openmpi-mpifort=4.0.2
   - netcdf-fortran=4.6.1
   - fortran-compiler
   # Development dependencies
