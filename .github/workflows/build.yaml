@@ -97,6 +97,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch the test data and then run pytest
         run: |
+          apt update
+          apt install -y wget make
           make tests/test-data/mcip
           pytest -r a -v tests/unit
           
