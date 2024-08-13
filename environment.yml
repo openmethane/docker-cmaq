@@ -7,7 +7,7 @@ dependencies:
   - jasper=1.900.1
   - mpich=4.2.1
   - netcdf-fortran=4.6.1
-  - fortran_compiler
+  - fortran-compiler
   # Development dependencies
   - pytest
   - python-dotenv
