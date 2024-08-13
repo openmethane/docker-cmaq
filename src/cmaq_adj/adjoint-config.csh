@@ -39,7 +39,7 @@ setenv STENEX  ${M3LIB}/se_snl
 setenv F_FLAGS "-ffixed-line-length-none -fd-lines-as-comments -fallow-argument-mismatch -dI -cpp -I. -g -O2"
 setenv CPP_FLAGS ""
 setenv C_FLAGS    "-g -DFLDMN -I${MPICH}/include"
-setenv LINK_FLAGS "-fopenmp"
+setenv LINK_FLAGS ""
 # CHANGE: Set location of libraries/include files
 setenv IOAPI_FLAGS  "-L${IOAPI_HOME}/${BLD_OS}_${system}${compiler_ext} -lioapi"
 setenv NETCDF_FLAGS  "`nf-config --flibs`"
