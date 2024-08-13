@@ -1,35 +1,17 @@
-FROM continuumio/miniconda3 as conda
-
-COPY environment.yml /opt/environment.yml
-RUN conda env create -f /opt/environment.yml
-
-# Install conda-pack:
-RUN conda install -c conda-forge conda-pack
-
-# Use conda-pack to create a standalone enviornment
-# in /venv:
-RUN conda-pack -n cmaq -o /tmp/env.tar && \
-  mkdir /opt/venv && cd /opt/venv && tar xf /tmp/env.tar && \
-  rm /tmp/env.tar
-
-# We've put venv in same path it'll be in final image,
-# so now fix up paths:
-RUN /opt/venv/bin/conda-unpack
-
 FROM debian:bookworm as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV CMAQ_VERSION="5.0.2"
-ENV PATH=/opt/venv/bin:$PATH
-ENV LD_LIBRARY_PATH=/opt/venv/bin:$LD_LIBRARY_PATH
 
 RUN apt-get update && \
-    apt-get install -y build-essential m4 csh wget && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y build-essential m4 csh wget libhdf5-dev libmpich-dev libnetcdff-dev gfortran python3-pytest python3-dotenv
+
+RUN wget -nv https://snapshot.debian.org/archive/debian-security/20190413T190428Z/pool/updates/main/j/jasper/libjasper1_1.900.1-debian1-2.4%2Bdeb8u6_amd64.deb && \
+    dpkg --force-all -i libjasper1_1.900.1-debian1-2.4+deb8u6_amd64.deb && \
+    wget -nv https://snapshot.debian.org/archive/debian-security/20190413T190428Z/pool/updates/main/j/jasper/libjasper-dev_1.900.1-debian1-2.4%2Bdeb8u6_amd64.deb && \
+    dpkg -i libjasper-dev_1.900.1-debian1-2.4+deb8u6_amd64.deb
 
 WORKDIR /opt/cmaq
-
-COPY --from=conda /opt/venv /opt/venv
 
 # Build ioapi
 COPY templates/ioapi /opt/cmaq/templates/ioapi
@@ -55,15 +37,21 @@ MAINTAINER Jared Lewis <jared.lewis@climate-resource.com>
 
 ENV TZ=Etc/UTC
 ENV CMAQ_VERSION="5.0.2"
-ENV PATH=/opt/venv/bin:$PATH
-ENV LD_LIBRARY_PATH=/opt/venv/bin:$LD_LIBRARY_PATH
+ENV DEBUGINFOD_URLS="https://debuginfod.debian.net"
 
 WORKDIR /opt/cmaq
-COPY --from=conda /opt/venv /opt/venv
 COPY --from=build /opt/cmaq /opt/cmaq
 
+# todo we don't need the -dev libraries for the runtime, could be slimmed down
 RUN apt-get update && \
-    apt-get install -y make csh wget && \
+    apt-get install -y make csh wget libhdf5-dev libmpich-dev libnetcdff-dev python3-pytest python3-dotenv && \
     rm -rf /var/lib/apt/lists/*
+
+# todo we probably don't need the -dev library for the runtime
+RUN wget -nv https://snapshot.debian.org/archive/debian-security/20190413T190428Z/pool/updates/main/j/jasper/libjasper1_1.900.1-debian1-2.4%2Bdeb8u6_amd64.deb && \
+    dpkg --force-all -i libjasper1_1.900.1-debian1-2.4+deb8u6_amd64.deb && \
+    wget -nv https://snapshot.debian.org/archive/debian-security/20190413T190428Z/pool/updates/main/j/jasper/libjasper-dev_1.900.1-debian1-2.4%2Bdeb8u6_amd64.deb && \
+    dpkg -i libjasper-dev_1.900.1-debian1-2.4+deb8u6_amd64.deb && \
+    rm libjasper1_1.900.1-debian1-2.4+deb8u6_amd64.deb libjasper-dev_1.900.1-debian1-2.4+deb8u6_amd64.deb
 
 ENTRYPOINT ["/bin/bash"]

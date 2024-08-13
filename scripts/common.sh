@@ -8,5 +8,3 @@ export BLD_OS
 export BIN=${BLD_OS}_${ARCH}gfort
 export BASEDIR=$PWD
 export CPLMODE=nocpl
-export LD_LIBRARY_PATH="/opt/venv/lib:${LD_LIBRARY_PATH}"
-export PATH="/opt/venv/bin:${PATH}"
