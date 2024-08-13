@@ -19,6 +19,7 @@ ioapi-3.1
 
 # Generated files
 N_SPC_EMIS.dat
+CTM_LOG_*
 
 # Data from S3
 tests/test-data/mcip*

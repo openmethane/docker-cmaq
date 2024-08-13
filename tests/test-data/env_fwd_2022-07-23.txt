@@ -74,4 +74,5 @@ INIT_GASC_1=${DATA_DIR}/cmaq/ICON.d01.aust-nsw_v1.CH4only.nc
 INIT_AERO_1=${DATA_DIR}/cmaq/ICON.d01.aust-nsw_v1.CH4only.nc
 INIT_NONR_1=${DATA_DIR}/cmaq/ICON.d01.aust-nsw_v1.CH4only.nc
 INIT_TRAC_1=${DATA_DIR}/cmaq/ICON.d01.aust-nsw_v1.CH4only.nc
-CTM_XFIRST_IN=
+# Empty environment variables explode when running with multiple processes
+# CTM_XFIRST_IN=

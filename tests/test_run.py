@@ -25,8 +25,6 @@ def prep_run_dir(run_dir: Path):
     return chkpnt_dir, output_dir
 
 def run_cmaq(cmd, env_file, overrides):
-
-
     env_values = {
         **os.environ,
         **dotenv.dotenv_values(env_file),
