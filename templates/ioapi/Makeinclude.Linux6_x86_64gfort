@@ -32,7 +32,8 @@ ARCHFLAGS = \
  -DF90=1 -DFLDMN=1 \
  -DFSTR_L=int \
  -DIOAPI_NO_STDOUT=1 \
- -DNEED_ARGS=1
+ -DNEED_ARGS=1 \
+ -DDEBUGGING=1
 PARFLAGS  =
 ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc `nf-config --flibs`
 
