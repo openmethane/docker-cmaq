@@ -36,8 +36,6 @@ A `make run` target is provided to start the container with the repository mount
 Some additional test-data is required to run the tests that is too large to check into the repository.
 This can be fetched using `make tests/test-data/mcip` (locally or in the docker container).
 
-
-
 ```
     make run
     cd /opt/project

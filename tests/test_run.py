@@ -15,6 +15,7 @@ import pytest
 def test_data_dir():
     return Path(__file__).parents[1] / "tests" / "test-data"
 
+
 def prep_run_dir(run_dir: Path):
     output_dir = run_dir / "output"
     chkpnt_dir = run_dir / "chkpnt"
@@ -24,15 +25,33 @@ def prep_run_dir(run_dir: Path):
 
     return chkpnt_dir, output_dir
 
+
 def run_cmaq(cmd, env_file, overrides):
+    # Variables to copy across from current environment
+    current_env = {
+        k: os.environ[k]
+        for k in [
+            "HOSTNAME",
+            "LD_LIBRARY_PATH",
+            "PATH",
+            "RUN_DIR",
+            "DATA_DIR",
+        ]
+    }
     env_values = {
-        **os.environ,
+        **current_env,
         **dotenv.dotenv_values(env_file),
         **overrides,
     }
 
     res = subprocess.run(
-        cmd, shell=True, executable="/bin/csh", capture_output=True, text=True, env=env_values
+        cmd,
+        shell=True,
+        executable="/bin/csh",
+        capture_output=True,
+        text=True,
+        env=env_values,
+        cwd=current_env["RUN_DIR"],
     )
 
     print(res.stdout)
@@ -43,6 +62,7 @@ def run_cmaq(cmd, env_file, overrides):
             print(f.read())
 
     return res
+
 
 def test_run_cmaq_fwd(monkeypatch, tmp_path, test_data_dir):
     run_cmd = "/opt/cmaq/cmaq_adj/BLD_fwd_CH4only/ADJOINT_FWD"
@@ -56,6 +76,7 @@ def test_run_cmaq_fwd(monkeypatch, tmp_path, test_data_dir):
 
     assert res.returncode == 0
 
+
 def test_run_cmaq_fwd_mp(monkeypatch, tmp_path, test_data_dir):
     run_cmd = "mpirun -np 4 /opt/cmaq/cmaq_adj/BLD_fwd_CH4only/ADJOINT_FWD"
 
@@ -64,8 +85,10 @@ def test_run_cmaq_fwd_mp(monkeypatch, tmp_path, test_data_dir):
 
     prep_run_dir(tmp_path)
 
-    res = run_cmaq(run_cmd, test_data_dir / "env_fwd_2022-07-23.txt", {
-        "NPCOL_NPROW": "2 2"
-    })
+    res = run_cmaq(
+        run_cmd,
+        test_data_dir / "env_fwd_2022-07-23.txt",
+        {"NPCOL_NPROW": "2 2"},
+    )
 
     assert res.returncode == 0
