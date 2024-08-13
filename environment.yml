@@ -5,6 +5,7 @@ channels:
 dependencies:
   - hdf5=1.14.3
   - jasper=1.900.1
+  # Gadi uses openmpi v4.0.2 but that results in conda conflicts
   - openmpi=4
   - openmpi-mpifort=4
   - netcdf-fortran=4.6.1

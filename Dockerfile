@@ -57,6 +57,7 @@ ENV TZ=Etc/UTC
 ENV CMAQ_VERSION="5.0.2"
 ENV PATH=/opt/venv/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/venv/bin:$LD_LIBRARY_PATH
+ENV OMPI_MCA_plm_ssh_agent=false
 
 WORKDIR /opt/cmaq
 COPY --from=conda /opt/venv /opt/venv
