@@ -1,5 +1,7 @@
 # These tests are meant to be run inside the docker container as they
 # use the cmaq executable and reference paths only available in the docker container.
+#
+# Run `make tests/test-data/mcip` before running these tests
 
 
 import subprocess
