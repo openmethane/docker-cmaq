@@ -49,8 +49,8 @@ setenv extra_lib
        setenv myFC mpif90
        setenv myCC mpicc
        setenv myLINK_FLAG "-i-static"
-       setenv myFFLAGS "-fixed -132 -O3 -override-limits -fno-alias -mp1 -fp-model precise"
-       setenv myFRFLAGS "-free -O3 -fno-alias -mp1 -fp-model precise"
+       setenv myFFLAGS "-fixed -132 -O2 -g -override-limits -fno-alias -mp1 -fp-model precise"
+       setenv myFRFLAGS "-free -O2 -g -fno-alias -mp1 -fp-model precise"
        setenv myCFLAGS "-O2"
        setenv extra_lib $extra_lib
        breaksw
