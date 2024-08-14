@@ -36,7 +36,7 @@ setenv STENEX  ${M3LIB}/se_snl
 # CHANGE: Set compiler flags
 # These have been tested with gfortran9
 # -march=native -mtune=native
-setenv F_FLAGS "-ffixed-line-length-none -fd-lines-as-comments -fallow-argument-mismatch -dI -cpp -I. -g -O2 -march=x86-64-v3"
+setenv F_FLAGS "-ffixed-line-length-none -fd-lines-as-comments -fallow-argument-mismatch -dI -cpp -I. -g -O2 -march=core-avx2"
 setenv CPP_FLAGS ""
 setenv C_FLAGS    "-g -DFLDMN -I${MPICH}/include"
 setenv LINK_FLAGS "-fopenmp"
