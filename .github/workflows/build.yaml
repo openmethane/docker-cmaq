@@ -27,6 +27,9 @@ jobs:
       IMAGE: ghcr.io/openmethane/cmaq
       CMAQ_VERSION: 5.0.2
 
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+
     steps:
       # Clone and update submodules
       - name: Checkout
@@ -75,3 +78,25 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/openmethane/cmaq@${{ needs.build.outputs.digest }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+    # Temporary workaround until we can get everything passing
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Fetch the test data and then run pytest
+        run: |
+          make tests/test-data/mcip
+          pytest -r a -v tests
+          

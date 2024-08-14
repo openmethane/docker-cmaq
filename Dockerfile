@@ -62,4 +62,8 @@ WORKDIR /opt/cmaq
 COPY --from=conda /opt/venv /opt/venv
 COPY --from=build /opt/cmaq /opt/cmaq
 
+RUN apt-get update && \
+    apt-get install -y make csh wget && \
+    rm -rf /var/lib/apt/lists/*
+
 ENTRYPOINT ["/bin/bash"]

@@ -6,3 +6,5 @@
 bldmake
 ADJOINT_BWD
 ADJOINT_FWD
+
+tests
