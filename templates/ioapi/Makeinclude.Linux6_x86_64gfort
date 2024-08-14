@@ -21,8 +21,8 @@ MODI = -J       ## Module-include-directory command
 
 MFLAGS    = -ffast-math -funroll-loops -m64 -fallow-argument-mismatch # -march=native -mtune=native #  -Wall -Wsurprising
 
-OMPFLAGS  = -fopenmp
-OMPLIBS   = -fopenmp
+OMPFLAGS  = # -fopenmp
+OMPLIBS   = # -fopenmp
 COPTFLAGS = -g -O2 -fbacktrace ${MFLAGS}
 FOPTFLAGS = -g -O2 -fbacktrace ${MFLAGS}
 FPPFLAGS  = -DF90=1
@@ -31,11 +31,11 @@ ARCHFLAGS = \
  -DAUTO_ARRAYS=1 \
  -DF90=1 -DFLDMN=1 \
  -DFSTR_L=int \
- -DIOAPI_NO_STDOUT=1 \
+ -DIOAPI_NO_STDOUT=0 \
  -DNEED_ARGS=1 \
  -DDEBUGGING=1
 PARFLAGS  =
-ARCHLIB   = -dynamic -L/usr/lib64 -lm -lpthread -lc `nf-config --flibs`
+ARCHLIB   = -dynamic -lm -lpthread -lc `nf-config --flibs`
 
 M4DEFFILE = $(PVM_ROOT)/conf/$(PVM_ARCH).m4
 # PVMLIBS   = -lpvm3

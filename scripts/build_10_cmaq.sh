@@ -15,6 +15,7 @@ pushd ${cmaq_dirname} || exit
 # Link in the required libraries
 mkdir -p /opt/cmaq/${cmaq_dirname}/lib/${ARCH}/gcc/
 ln -s /opt/cmaq/ioapi-3.1 /opt/cmaq/${cmaq_dirname}/lib/ioapi-3.1
+ln -s /opt/venv /opt/cmaq/${cmaq_dirname}/lib/mpich
 
 pushd scripts
 # Copy in config

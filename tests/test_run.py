@@ -78,7 +78,7 @@ def test_run_cmaq_fwd(monkeypatch, tmp_path, test_data_dir):
 
 
 def test_run_cmaq_fwd_mp(monkeypatch, tmp_path, test_data_dir):
-    run_cmd = "mpirun -np 4 /opt/cmaq/cmaq_adj/BLD_fwd_CH4only/ADJOINT_FWD"
+    run_cmd = "mpirun -np 2 /opt/cmaq/cmaq_adj/BLD_fwd_CH4only/ADJOINT_FWD"
 
     monkeypatch.setenv("RUN_DIR", str(tmp_path))
     monkeypatch.setenv("DATA_DIR", str(test_data_dir))
@@ -88,7 +88,7 @@ def test_run_cmaq_fwd_mp(monkeypatch, tmp_path, test_data_dir):
     res = run_cmaq(
         run_cmd,
         test_data_dir / "env_fwd_2022-07-23.txt",
-        {"NPCOL_NPROW": "2 2"},
+        {"NPCOL_NPROW": "2 1"},
     )
 
     assert res.returncode == 0
