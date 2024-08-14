@@ -31,7 +31,6 @@ def run_cmaq(cmd, env_file, overrides):
     current_env = {
         k: os.environ[k]
         for k in [
-            "OMPI_MCA_plm_ssh_agent",
             "OMPI_ALLOW_RUN_AS_ROOT",
             "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM",
             "HOSTNAME",

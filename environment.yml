@@ -10,6 +10,7 @@ dependencies:
   - openmpi-mpifort=4
   - netcdf-fortran=4.6.1
   - fortran-compiler
+  - openssh # Needed for MPI
   # Development dependencies
   - pytest
   - python-dotenv
